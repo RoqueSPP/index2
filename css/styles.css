@@ -1,0 +1,67 @@
+@charset "UTF-8"
+
+.font {
+  margin: 1;
+  padding: 1;
+  box-sizing: border-box;
+}
+
+.legend {
+  border: 4px;
+  border-color: rgb(49, 4, 49);
+
+}
+
+input[type="button"] {
+  margin: 0 4px;
+  margin-top: 12px;
+}
+
+body {
+  color: #270521;
+}
+
+body {
+  background: #87b198;
+}
+
+.height {
+  margin-left: 30px;
+}
+
+.Weight {
+  margin-left: 25px;
+}
+
+.Password {
+  margin-left: 5px;
+}
+
+.Age {
+  margin-left: 45px;
+}
+
+.CPF {
+  margin-left: 30px;
+}
+
+.email {
+  margin-left: 50px;
+}
+
+.Telephone {
+  margin-left: 25px;
+}
+
+.postalcode {
+  margin-left: 15px;
+}
+
+.city {
+  margin-left: 30px;
+}
+
+.state {
+  margin-left: 70px;
+}
+

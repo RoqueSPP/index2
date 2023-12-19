@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+    <meta name="description" content="FORMULÁRIOS COM HTML, CSS & JS!">
+    <meta name="keywords" content="HTML, CSS, FORMULÁRIOS, JavaScript, Playwright, Cypress, Robot, Codeceptjs, Appium, Selenium, Pactum, Postman">
+    <title>Pagina de testes</title>
+</head>
+<body>
+
+    <section>
+        <header>
+            <h1 id="titulo">Pagina de testes</h1>
+        </header>
+    </section>
+
+    <form>
+        <fieldset>
+         <legend><strong>Basic information:</strong></legend>
+
+          <label>FirstName:
+          <input  type="text" name="firstname" id="firstname" placeholder="Insert your FullName" required>
+          
+          <label>LasttName:
+          <input  type="text" name="lastname" id="lastname" placeholder="Insert your LastName" required>
+
+          <label >Password:
+          <input class="Password" type="text" name="passwoord" id="password" placeholder="Insert your Password" required>
+
+          <label>Age:
+          <input class="Age" type="number" name="age" id="age" placeholder="Insert your age" required>
+        
+          <label>Date of Birth:
+          <input  type="date" name="birth" id="birth" placeholder="Put your date of birth" required>
+          <br><br>
+          <label>height:
+          <input class="height" name="height" id="height" placeholder="Insert your height" required>
+
+          <label >Weight:
+          <input class="Weight"  name="peso" id="peso" placeholder="Insert your Weight" required>
+
+          <label>blood type:
+          <input type="text" name="blood" id="blood" placeholder="insrt your blood type" required>
+
+          <label>Skin Collor:
+          <input name="skin" id="skin" placeholder="insert your skin color" required>
+          
+          <input type="checkbox" name="checkbox1">
+        </fieldset><br>
+
+        <fieldset>
+            <legend><strong>Personal Data:</strong></legend>
+
+            <label >CPF:
+            <input class="CPF" type="number" name="cpf" id="cpf" placeholder="Put CPF" required>
+
+            <label >general register:
+            <input  type="number" name="rg" id="rg" placeholder="General Register" required>
+
+            <label>Telephone:
+            <input class="Telephone"  type="number" name="phone" id="phone" placeholder="Telephone" required>
+            <br><br>
+            <label >cell phone:
+            <input type="number" name="mobile" id="mobile" placeholder="Mobile" required>
+
+            <label>E-mail:
+            <input class="email" type="email" name="email" id="email" placeholder="Best your e-mail"
+            required>
+                
+            <label>Mather Name:
+            <input type="text" name="mather" id="mather" placeholder="Mother FullName" required>
+
+            <label>father Name:
+            <input class="father" type="text" name="father" id="father" placeholder="Father FullName" required>
+        
+            <input type="checkbox" name="checkbox2">
+        </fieldset><br>
+            
+        <fieldset>
+            <legend><strong>Other informations:</strong></legend>
+            <label>Sex (Male/Feamale):
+            <select id="select1" name="select">
+                <option value="--Select-- selected">--Select--</option>
+                <option value="male">male</option>
+                <option value="female">female</option>
+                <option value="No Replay">No Replay</option>
+            </select>
+
+            <label>astrological signs:
+            <select id="select2" name="select">
+                <option value="--Select-- selected">--Select--</option>
+                <option value="Aries">Aries</option>
+                <option value="Taurus">Taurus</option>
+                <option value="Gemini">Gemini</option>
+                <option value="Cancer">Cancer</option>
+                <option value="Leo">Leo</option>
+                <option value="Virgo">Virgo</option>
+                <option value="Libra">Libra</option>
+                <option value="Scorpio">Scorpio</option>
+                <option value="Sagittarius">Sagittarius</option>
+                <option value="Capricorn">Capricorn</option>
+                <option value="aquarium">aquarium</option>
+                <option value="Pisces">Pisces</option>
+            </select>
+            <input type="checkbox" name="checkbox3">
+        </fieldset><br>
+
+        <fieldset>
+            <legend><strong>Adress:</strong></legend>
+            <label>PostalCode:
+            <input class="postalcode" type="number" name="postalCode" id="postalCode" placeholder="insert your PostalCode" required>
+            
+            <label>Address:
+            <input type="text" disabled name="address" id="address" required>
+
+            <label>Address Number:
+            <input  type="number" name="addressNumber" id="addressNumber" placeholder="insert yur Address Number" required>
+            <br><br>
+            <label >neighborhood: 
+            <input  type="text" disabled name="neighborhood" id="neighborhood"required>
+
+            <label>City:
+            <input class="city" disabled type="text" name="city" id="city" required>
+             
+            <label>State:
+            <input class="state" disabled type="text" name="state" id="state" required>
+
+            <input type="checkbox" name="checkbox4">
+        </fieldset>
+            
+        <input type="button"  id="btnButton"onclick="location.href='file:///C:/index2/pass.html';" value="Validate registration" >
+    
+    </form>
+    <script  src="script/script.js"  type="text/javascript"> </script>
+   
+</body>
+
+</html>
