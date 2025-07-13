@@ -41,13 +41,11 @@ const config = {
 ## 🔌 Conectando ao Banco
 
 ```js
-sql.connect(config).then(pool => {
-  return pool.request().query('SELECT * FROM sua_tabela');
-}).then(result => {
-  console.dir(result.recordset);
-}).catch(err => {
-  console.error(err);
-});
+async function buscarDados(query) {
+    const conect =await sql.connect(dbConnection);
+    return  await conect.request()
+        .query(query);
+}
 ```
 
 ---
