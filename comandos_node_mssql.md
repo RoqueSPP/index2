@@ -137,18 +137,11 @@ const config = {
 };
 
 async function buscarDados() {
-  try {
-    const pool = await sql.connect(config);
-    const result = await pool.request()
-      .input('id', sql.Int, 5)
-      .query('SELECT * FROM Pessoas WHERE id = @id');
 
-    console.log(result.recordset);
-  } catch (err) {
-    console.error('Erro:', err);
-  } finally {
-    await sql.close();
-  }
+    const conect =await sql.connect(dbConnection);
+    return  await conect.request()
+        .query('SELECT * FROM clientes');
+
 }
 
 buscarDados();
