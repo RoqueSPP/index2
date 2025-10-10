@@ -1,90 +1,228 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerador de CPFs e CNPJs</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gerador de CPF e CNPJ</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background-color: #f4f4f9;
+    :root{
+      --bg: #f4f4f9;
+      --card: #ffffff;
+      --accent: #090b09;
+      --muted: #777;
+      --shadow: 0 6px 14px rgba(0,0,0,0.08);
     }
 
-    h1 {
-      color: #333;
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Arial", sans-serif;
+      background: var(--bg);
+      color:#222;
     }
 
-    button {
-      background-color: #090b09;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-      margin-top: 10px;
-      font-size: 16px;
-      border-radius: 5px;
+    .container{
+      max-width:900px;
+      margin:40px auto;
+      padding:24px;
     }
 
-    button:hover {
-      background-color: #2a2a2a;
+    /* header */
+    header{
+      text-align:center;
+      margin-bottom:18px;
+    }
+    header h1{
+      margin:0;
+      font-size:22px;
+      letter-spacing:0.3px;
+    }
+    header p{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:14px;
     }
 
-    input[type="text"] {
-      font-size: 30px;
-      text-align: center;
-      margin: 20px 0;
-      min-height: 40px;
-      padding: 5px;
-      width: 100%;
-      border: 2px solid #cecece;
-      box-shadow: 3px 4px 5px -1px rgba(0, 0, 0, 0.75);
+    /* card-like area */
+    .card{
+      background: var(--card);
+      border-radius:14px;
+      padding:20px;
+      box-shadow: var(--shadow);
     }
 
-    label {
-      font-size: 16px;
-      display: block;
-      margin-bottom: 5px;
+    /* Two generator rows (CNPJ / CPF) */
+    .generator{
+      display:grid;
+      gap:20px;
     }
 
-    .section {
-      margin-bottom: 40px;
+    .row{
+      display:grid;
+      grid-template-columns: 160px 1fr; /* left narrow column and wide input column */
+      gap:18px;
+      align-items:center;
+    }
+
+    /* left small button block matches the pill style on the example image */
+    .left{
+      display:flex;
+      gap:10px;
+      flex-direction:column;
+      align-items:flex-start;
+    }
+
+    .small-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:44px;
+      padding:0 12px;
+      border-radius:22px;
+      background:var(--accent);
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      transition: transform .08s ease, box-shadow .08s;
+      width:140px;
+      text-align:center;
+    }
+    .small-btn:active{ transform: translateY(1px); }
+    .small-btn:focus{ outline:3px solid rgba(0,0,0,0.08); }
+
+    /* right column: large rounded input + controls */
+    .right{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .display{
+      flex:1;
+      font-size:28px;
+      height:54px;
+      padding:6px 14px;
+      border-radius:18px;
+      border:2px solid #cecece;
+      box-shadow: 3px 4px 5px -1px rgba(0,0,0,0.12);
+      text-align:center;
+      background:#fff;
+      user-select:all;
+    }
+
+    .controls{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      white-space:nowrap;
+    }
+
+    .btn{
+      height:44px;
+      padding:0 14px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      background:#2a2a2a;
+      color:white;
+      font-weight:600;
+      min-width:120px;
+    }
+    .btn.secondary{
+      background:transparent;
+      color:#333;
+      border:1px solid #ddd;
+      min-width:44px;
+      padding:0 10px;
+    }
+
+    .checkbox{
+      font-size:13px;
+      color:#444;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .help{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* small responsive tweak */
+    @media (max-width:640px){
+      .row{ grid-template-columns: 1fr; }
+      .left{ flex-direction:row; justify-content:space-between; width:100%; }
+      .small-btn{ width:48%; }
+      .controls{ flex-wrap:wrap; }
+      .display{ font-size:20px; height:48px; }
     }
   </style>
 </head>
-
 <body>
-  <div class="section">
-    <h1>Gerador de CNPJ</h1>
-    <p>Gerador de CNPJ válidos</p>
+  <div class="container">
+    <header>
+      <h1>Gerador de CPF e CNPJ</h1>
+      <p>Use os botões à esquerda para gerar — o visual segue o layout do exemplo.</p>
+    </header>
 
-    <input id="cnpj-input" type="text" disabled />
-    <label><input type="checkbox" id="pontuar-cnpj" checked> Exibir com pontuação</label>
-    <button onclick="gerarNovoCNPJ()">GERAR NOVO CNPJ</button>
-  </div>
+    <div class="card">
+      <div class="generator">
 
-  <div class="section">
-    <h1>Gerador de CPF</h1>
-    <p>Gerador de CPF válidos</p>
+        <!-- CNPJ row -->
+        <div class="row" aria-label="Gerador de CNPJ">
+          <div class="left">
+            <button class="small-btn" id="btn-gerar-cnpj" title="Gerar CNPJ">GERAR CNPJ</button>
+            <div class="checkbox" style="margin-top:6px;">
+              <input type="checkbox" id="pontuar-cnpj" checked />
+              <label for="pontuar-cnpj">Exibir com pontuação</label>
+            </div>
+          </div>
 
-    <input id="cpf-input" type="text" disabled />
-    <label><input type="checkbox" id="pontuar-cpf" checked> Exibir com pontuação</label>
-    <button onclick="gerarNovoCPF()">GERAR NOVO CPF</button>
+          <div class="right">
+            <input id="cnpj-input" class="display" type="text" disabled aria-label="CNPJ gerado" />
+            <div class="controls">
+              <button class="btn" id="cnpj-copy" title="Copiar CNPJ">COPIAR</button>
+              <button class="btn secondary" id="cnpj-regen" title="Gerar novamente">↺</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CPF row -->
+        <div class="row" aria-label="Gerador de CPF">
+          <div class="left">
+            <button class="small-btn" id="btn-gerar-cpf" title="Gerar CPF">GERAR CPF</button>
+            <div class="checkbox" style="margin-top:6px;">
+              <input type="checkbox" id="pontuar-cpf" checked />
+              <label for="pontuar-cpf">Exibir com pontuação</label>
+            </div>
+          </div>
+
+          <div class="right">
+            <input id="cpf-input" class="display" type="text" disabled aria-label="CPF gerado" />
+            <div class="controls">
+              <button class="btn" id="cpf-copy" title="Copiar CPF">COPIAR</button>
+              <button class="btn secondary" id="cpf-regen" title="Gerar novamente">↺</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="help">
+        Dica: clique em <strong>GERAR</strong> ou no ícone ↺ para gerar outro. Use "COPIAR" para copiar para a área de transferência.
+      </div>
+    </div>
   </div>
 
   <script>
-    // Função para gerar CNPJ
-    function gerarNovoCNPJ() {
-      const pontuar = document.getElementById('pontuar-cnpj').checked;
-      document.getElementById('cnpj-input').value = gerarCNPJ(pontuar);
-    }
-
+    // ---------- CNPJ ----------
     function gerarCNPJ(pontuar) {
-      const n = 9;
+      // base 8 dígitos aleatórios
       const d = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10));
-      const v = [0, 0];
 
       const calcDV = (base, pesos) => {
         let soma = 0;
@@ -93,45 +231,97 @@
         return resto < 2 ? 0 : 11 - resto;
       };
 
-      v[0] = calcDV([...d, 0, 0, 0, 1], [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
-      v[1] = calcDV([...d, 0, 0, 0, 1, v[0]], [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
-
-      const cnpj = [...d, 0, 0, 0, 1, v[0], v[1]];
+      const v0 = calcDV([...d, 0, 0, 0, 1], [5,4,3,2,9,8,7,6,5,4,3,2]);
+      const v1 = calcDV([...d, 0, 0, 0, 1, v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
+      const cnpj = [...d, 0, 0, 0, 1, v0, v1];
 
       if (pontuar) {
-        return `${cnpj.slice(0, 2).join('')}.${cnpj.slice(2, 5).join('')}.${cnpj.slice(5, 8).join('')}/${cnpj.slice(8, 12).join('')}-${cnpj.slice(12).join('')}`;
+        return `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`;
       } else {
         return cnpj.join('');
       }
     }
 
-    // Função para gerar CPF
-    function gerarNovoCPF() {
-      const pontuar = document.getElementById('pontuar-cpf').checked;
-      document.getElementById('cpf-input').value = gerarCPF(pontuar);
-    }
-
+    // ---------- CPF ----------
     function gerarCPF(pontuar) {
       const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
 
       const calcDV = (nums, peso) => {
         let soma = 0;
-        for (let i = 0; i < nums.length; i++) soma += nums[i] * (peso - i);
+        for (let i = 0; i < nums.length; i++){
+          soma += nums[i] * (peso - i);
+        }
         let resto = soma % 11;
         return resto < 2 ? 0 : 11 - resto;
       };
 
       const d1 = calcDV(base, 10);
       const d2 = calcDV([...base, d1], 11);
-
       const cpf = [...base, d1, d2];
 
       if (pontuar) {
-        return `${cpf.slice(0, 3).join('')}.${cpf.slice(3, 6).join('')}.${cpf.slice(6, 9).join('')}-${cpf.slice(9).join('')}`;
+        return `${cpf.slice(0,3).join('')}.${cpf.slice(3,6).join('')}.${cpf.slice(6,9).join('')}-${cpf.slice(9).join('')}`;
       } else {
         return cpf.join('');
       }
     }
+
+    // ---------- Helpers ----------
+    function copyToClipboard(text, el) {
+      navigator.clipboard?.writeText(text).then(() => {
+        const original = el.textContent;
+        el.textContent = "COPIADO!";
+        setTimeout(() => el.textContent = original, 900);
+      }).catch(() => {
+        // Fallback
+        alert("Copiar não suportado – selecione e copie manualmente.");
+      });
+    }
+
+    // ---------- Bind UI ----------
+    const cnpjInput = document.getElementById('cnpj-input');
+    const cpfInput = document.getElementById('cpf-input');
+
+    // buttons
+    document.getElementById('btn-gerar-cnpj').addEventListener('click', () => {
+      const pont = document.getElementById('pontuar-cnpj').checked;
+      cnpjInput.value = gerarCNPJ(pont);
+    });
+    document.getElementById('cnpj-regen').addEventListener('click', () => {
+      const pont = document.getElementById('pontuar-cnpj').checked;
+      cnpjInput.value = gerarCNPJ(pont);
+    });
+    document.getElementById('cnpj-copy').addEventListener('click', (e) => {
+      if(!cnpjInput.value) {
+        cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
+      }
+      copyToClipboard(cnpjInput.value, e.currentTarget);
+    });
+
+    document.getElementById('btn-gerar-cpf').addEventListener('click', () => {
+      const pont = document.getElementById('pontuar-cpf').checked;
+      cpfInput.value = gerarCPF(pont);
+    });
+    document.getElementById('cpf-regen').addEventListener('click', () => {
+      const pont = document.getElementById('pontuar-cpf').checked;
+      cpfInput.value = gerarCPF(pont);
+    });
+    document.getElementById('cpf-copy').addEventListener('click', (e) => {
+      if(!cpfInput.value) {
+        cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
+      }
+      copyToClipboard(cpfInput.value, e.currentTarget);
+    });
+
+    // generate defaults on load
+    window.addEventListener('load', () => {
+      cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
+      cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
+    });
+
+    // Keyboard accessibility: Enter on inputs triggers copy
+    cnpjInput.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') document.getElementById('cnpj-copy').click(); });
+    cpfInput.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') document.getElementById('cpf-copy').click(); });
   </script>
 </body>
 </html>
