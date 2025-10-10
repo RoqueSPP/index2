@@ -57,40 +57,37 @@
       gap:20px;
     }
 
-    .row{
-      display:grid;
-      grid-template-columns: 160px 1fr; /* left narrow column and wide input column */
-      gap:18px;
-      align-items:center;
-    }
+ .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
 
-    /* left small button block matches the pill style on the example image */
-    .left{
-      display:flex;
-      gap:10px;
-      flex-direction:column;
-      align-items:flex-start;
-    }
+.left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
 
-    .small-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      height:44px;
-      padding:0 12px;
-      border-radius:22px;
-      background:var(--accent);
-      color:#fff;
-      border:none;
-      cursor:pointer;
-      font-weight:600;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-      transition: transform .08s ease, box-shadow .08s;
-      width:140px;
-      text-align:center;
-    }
-    .small-btn:active{ transform: translateY(1px); }
-    .small-btn:focus{ outline:3px solid rgba(0,0,0,0.08); }
+.small-btn {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: transform .08s ease, box-shadow .08s;
+}
+
+.small-btn:active {
+  transform: translateY(1px);
+}
 
     /* right column: large rounded input + controls */
     .right{
@@ -138,13 +135,12 @@
       padding:0 10px;
     }
 
-    .checkbox{
-      font-size:13px;
-      color:#444;
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
 
     .help{
       margin-top:12px;
@@ -311,12 +307,6 @@
         cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
       }
       copyToClipboard(cpfInput.value, e.currentTarget);
-    });
-
-    // generate defaults on load
-    window.addEventListener('load', () => {
-      cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
-      cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
     });
 
     // Keyboard accessibility: Enter on inputs triggers copy
