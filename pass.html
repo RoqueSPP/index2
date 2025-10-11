@@ -27,7 +27,6 @@
       padding:24px;
     }
 
-    /* header */
     header{
       text-align:center;
       margin-bottom:18px;
@@ -43,7 +42,6 @@
       font-size:14px;
     }
 
-    /* card-like area */
     .card{
       background: var(--card);
       border-radius:14px;
@@ -51,45 +49,45 @@
       box-shadow: var(--shadow);
     }
 
-    /* Two generator rows (CNPJ / CPF) */
     .generator{
       display:grid;
       gap:20px;
     }
 
- .row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-}
+    .row{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:18px;
+      align-items:center;
+    }
 
-.left {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
+    .left{
+      display:flex;
+      gap:10px;
+      flex-direction:column;
+      align-items:flex-start;
+    }
 
-.small-btn {
-  height: 34px;
-  padding: 0 18px;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-  transition: transform .08s ease, box-shadow .08s;
-}
+    .small-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:44px;
+      padding:0 12px;
+      border-radius:22px;
+      background:var(--accent);
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      transition: transform .08s ease, box-shadow .08s;
+      width:140px;
+      text-align:center;
+    }
+    .small-btn:active{ transform: translateY(1px); }
+    .small-btn:focus{ outline:3px solid rgba(0,0,0,0.08); }
 
-.small-btn:active {
-  transform: translateY(1px);
-}
-
-    /* right column: large rounded input + controls */
     .right{
       display:flex;
       gap:10px;
@@ -99,7 +97,7 @@
     .display{
       flex:1;
       font-size:28px;
-      height:24px;
+      height:54px;
       padding:6px 14px;
       border-radius:18px;
       border:2px solid #cecece;
@@ -117,7 +115,7 @@
     }
 
     .btn{
-      height:34px;
+      height:44px;
       padding:0 14px;
       border-radius:12px;
       border:none;
@@ -135,12 +133,13 @@
       padding:0 10px;
     }
 
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-}
+    .checkbox{
+      font-size:13px;
+      color:#444;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
 
     .help{
       margin-top:12px;
@@ -148,13 +147,12 @@
       font-size:13px;
     }
 
-    /* small responsive tweak */
     @media (max-width:640px){
       .row{ grid-template-columns: 1fr; }
       .left{ flex-direction:row; justify-content:space-between; width:100%; }
-      .small-btn{ width:38%; }
+      .small-btn{ width:48%; }
       .controls{ flex-wrap:wrap; }
-      .display{ font-size:20px; height:28px; }
+      .display{ font-size:20px; height:48px; }
     }
   </style>
 </head>
@@ -162,44 +160,44 @@
   <div class="container">
     <header>
       <h1>Gerador de CPF e CNPJ</h1>
-      <p>Use os botões à esquerda para gerar — o visual segue o layout do exemplo.</p>
+      <p>Use os botões à esquerda para gerar os números.</p>
     </header>
 
     <div class="card">
       <div class="generator">
 
-        <!-- CNPJ row -->
+        <!-- CNPJ -->
         <div class="row" aria-label="Gerador de CNPJ">
           <div class="left">
-            <button class="small-btn" id="btn-gerar-cnpj" title="Gerar CNPJ">GERAR CNPJ</button>
-            <div class="checkbox" style="margin-top:6px;">
+            <button class="small-btn" id="btn-gerar-cnpj">GERAR CNPJ</button>
+            <div class="checkbox">
               <input type="checkbox" id="pontuar-cnpj" checked />
               <label for="pontuar-cnpj">Exibir com pontuação</label>
             </div>
           </div>
-
           <div class="right">
-            <input id="cnpj-input" class="display" type="text" disabled aria-label="CNPJ gerado" />
+            <input id="cnpj-input" class="display" type="text" disabled />
             <div class="controls">
-              <button class="btn" id="cnpj-copy" title="Copiar CNPJ">COPIAR</button>
+              <button class="btn" id="cnpj-copy">COPIAR</button>
+              <button class="btn secondary" id="cnpj-regen">↺</button>
             </div>
           </div>
         </div>
 
-        <!-- CPF row -->
+        <!-- CPF -->
         <div class="row" aria-label="Gerador de CPF">
           <div class="left">
-            <button class="small-btn" id="btn-gerar-cpf" title="Gerar CPF">GERAR CPF</button>
-            <div class="checkbox" style="margin-top:6px;">
+            <button class="small-btn" id="btn-gerar-cpf">GERAR CPF</button>
+            <div class="checkbox">
               <input type="checkbox" id="pontuar-cpf" checked />
               <label for="pontuar-cpf">Exibir com pontuação</label>
             </div>
           </div>
-
           <div class="right">
-            <input id="cpf-input" class="display" type="text" disabled aria-label="CPF gerado" />
+            <input id="cpf-input" class="display" type="text" disabled />
             <div class="controls">
-              <button class="btn" id="cpf-copy" title="Copiar CPF">COPIAR</button>
+              <button class="btn" id="cpf-copy">COPIAR</button>
+              <button class="btn secondary" id="cpf-regen">↺</button>
             </div>
           </div>
         </div>
@@ -207,76 +205,56 @@
       </div>
 
       <div class="help">
-        Dica: clique em <strong>GERAR</strong> ou no ícone ↺ para gerar outro. Use "COPIAR" para copiar para a área de transferência.
+        Clique em <strong>GERAR</strong> ou no ícone ↺ para gerar um novo número.  
+        Use <strong>COPIAR</strong> para copiar para a área de transferência.
       </div>
     </div>
   </div>
 
   <script>
-    // ---------- CNPJ ----------
     function gerarCNPJ(pontuar) {
-      // base 8 dígitos aleatórios
       const d = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10));
-
       const calcDV = (base, pesos) => {
         let soma = 0;
         for (let i = 0; i < base.length; i++) soma += base[i] * pesos[i];
         let resto = soma % 11;
         return resto < 2 ? 0 : 11 - resto;
       };
-
-      const v0 = calcDV([...d, 0, 0, 0, 1], [5,4,3,2,9,8,7,6,5,4,3,2]);
-      const v1 = calcDV([...d, 0, 0, 0, 1, v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
-      const cnpj = [...d, 0, 0, 0, 1, v0, v1];
-
-      if (pontuar) {
-        return `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`;
-      } else {
-        return cnpj.join('');
-      }
+      const v0 = calcDV([...d, 0,0,0,1], [5,4,3,2,9,8,7,6,5,4,3,2]);
+      const v1 = calcDV([...d, 0,0,0,1,v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
+      const cnpj = [...d, 0,0,0,1, v0, v1];
+      return pontuar
+        ? `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`
+        : cnpj.join('');
     }
 
-    // ---------- CPF ----------
     function gerarCPF(pontuar) {
       const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
-
       const calcDV = (nums, peso) => {
         let soma = 0;
-        for (let i = 0; i < nums.length; i++){
-          soma += nums[i] * (peso - i);
-        }
+        for (let i = 0; i < nums.length; i++) soma += nums[i] * (peso - i);
         let resto = soma % 11;
         return resto < 2 ? 0 : 11 - resto;
       };
-
       const d1 = calcDV(base, 10);
       const d2 = calcDV([...base, d1], 11);
       const cpf = [...base, d1, d2];
-
-      if (pontuar) {
-        return `${cpf.slice(0,3).join('')}.${cpf.slice(3,6).join('')}.${cpf.slice(6,9).join('')}-${cpf.slice(9).join('')}`;
-      } else {
-        return cpf.join('');
-      }
+      return pontuar
+        ? `${cpf.slice(0,3).join('')}.${cpf.slice(3,6).join('')}.${cpf.slice(6,9).join('')}-${cpf.slice(9).join('')}`
+        : cpf.join('');
     }
 
-    // ---------- Helpers ----------
     function copyToClipboard(text, el) {
       navigator.clipboard?.writeText(text).then(() => {
         const original = el.textContent;
         el.textContent = "COPIADO!";
         setTimeout(() => el.textContent = original, 900);
-      }).catch(() => {
-        // Fallback
-        alert("Copiar não suportado – selecione e copie manualmente.");
-      });
+      }).catch(() => alert("Copiar não suportado."));
     }
 
-    // ---------- Bind UI ----------
     const cnpjInput = document.getElementById('cnpj-input');
     const cpfInput = document.getElementById('cpf-input');
 
-    // buttons
     document.getElementById('btn-gerar-cnpj').addEventListener('click', () => {
       const pont = document.getElementById('pontuar-cnpj').checked;
       cnpjInput.value = gerarCNPJ(pont);
@@ -286,9 +264,7 @@
       cnpjInput.value = gerarCNPJ(pont);
     });
     document.getElementById('cnpj-copy').addEventListener('click', (e) => {
-      if(!cnpjInput.value) {
-        cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
-      }
+      if (!cnpjInput.value) return alert("Gere um CNPJ primeiro!");
       copyToClipboard(cnpjInput.value, e.currentTarget);
     });
 
@@ -301,15 +277,15 @@
       cpfInput.value = gerarCPF(pont);
     });
     document.getElementById('cpf-copy').addEventListener('click', (e) => {
-      if(!cpfInput.value) {
-        cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
-      }
+      if (!cpfInput.value) return alert("Gere um CPF primeiro!");
       copyToClipboard(cpfInput.value, e.currentTarget);
     });
 
-    // Keyboard accessibility: Enter on inputs triggers copy
-    cnpjInput.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') document.getElementById('cnpj-copy').click(); });
-    cpfInput.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') document.getElementById('cpf-copy').click(); });
+    // remove a geração automática aqui 👇
+    // window.addEventListener('load', () => {
+    //   cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
+    //   cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
+    // });
   </script>
 </body>
 </html>
