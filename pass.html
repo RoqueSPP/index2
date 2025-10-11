@@ -299,20 +299,9 @@
       copyToClipboard(cpfInput.value, e.currentTarget);
     });
 
-    // Defina um namespace e chave únicos (use um nome seu)
-    const namespace = "roque-teste"; // Pode mudar para outro nome
-    const key = "visitas";            // Pode mudar também
-
-    // Faz a requisição à API para contar a visita
-    fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("contador").textContent = data.value.toLocaleString("pt-BR");
-      })
-      .catch((error) => {
-        console.error("Erro ao acessar CountAPI:", error);
-        document.getElementById("contador").textContent = "erro";
-      });
+<!-- Inicio codigo Contador -->
+<div align="center"><a title="contador de dias" href="https://www.calendario.cnt.br/ferramentas/contador-de-dias-calculadora-prazo-entre-datas"><img src="https://contador-gratis.com/contadores-de-visitas/111025083650982.gif"></a><div><a href="https://www.contador-gratis.com/" title="contador de visitas">Contador de Visitas</a></div></div>
+<!-- Fim do codigo Contador -->
   </script>
 </body>
 </html>
