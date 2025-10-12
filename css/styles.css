@@ -83,7 +83,7 @@
 
     #btnButton {
       background-color: var(--accent);
-      color: white;
+      color: black;
       border: none;
       padding: 14px 25px;
       border-radius: var(--radius);
@@ -109,6 +109,6 @@
       text-align: center;
       padding: 15px;
       font-size: 0.9rem;
-      color: #666;
+      color: black;
     }
   </style>
