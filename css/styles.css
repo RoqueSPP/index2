@@ -1,67 +1,113 @@
-@charset "UTF-8"
 
-.font {
-  margin: 1;
-  padding: 1;
-  box-sizing: border-box;
-}
+  <style>
+    :root {
+      --bg: #f4f6fa;
+      --card: #fff;
+      --accent: #0078ff;
+      --text: #333;
+      --radius: 10px;
+    }
 
-.legend {
-  border: 4px;
-  border-color: rgb(49, 4, 49);
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+    }
 
-}
+    header {
+      background: var(--accent);
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-input[type="button"] {
-  margin: 0 4px;
-  margin-top: 12px;
-}
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+    }
 
-body {
-  color: #270521;
-}
+    form {
+      background: var(--card);
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-body {
-  background: #87b198;
-}
+    fieldset {
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      margin-bottom: 25px;
+      padding: 20px;
+    }
 
-.height {
-  margin-left: 30px;
-}
+    legend {
+      font-weight: bold;
+      color: var(--accent);
+      padding: 0 8px;
+    }
 
-.Weight {
-  margin-left: 25px;
-}
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+    }
 
-.Password {
-  margin-left: 5px;
-}
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
 
-.Age {
-  margin-left: 45px;
-}
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
 
-.CPF {
-  margin-left: 30px;
-}
+    input[type="checkbox"] {
+      width: auto;
+      margin-top: 10px;
+    }
 
-.email {
-  margin-left: 50px;
-}
+    #btnButton {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px 25px;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
 
-.Telephone {
-  margin-left: 25px;
-}
+    #btnButton:hover {
+      background-color: #005fcc;
+    }
 
-.postalcode {
-  margin-left: 15px;
-}
+    @media (min-width: 700px) {
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+    }
 
-.city {
-  margin-left: 30px;
-}
-
-.state {
-  margin-left: 70px;
-}
-
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
