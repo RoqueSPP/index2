@@ -5,166 +5,166 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Gerador de CPF e CNPJ</title>
   <style>
-    :root{
+    :root {
       --bg: #f4f4f9;
       --card: #ffffff;
       --accent: #090b09;
       --muted: #777;
-      --shadow: 0 6px 14px rgba(0,0,0,0.08);
+      --shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
     }
 
-    html,body{
-      height:100%;
-      margin:0;
+    html, body {
+      height: 100%;
+      margin: 0;
       font-family: "Arial", sans-serif;
       background: var(--bg);
-      color:#222;
+      color: #222;
     }
 
-    .container{
-      max-width:900px;
-      margin:40px auto;
-      padding:24px;
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 24px;
     }
 
-    header{
-      text-align:center;
-      margin-bottom:18px;
+    header {
+      text-align: center;
+      margin-bottom: 18px;
     }
-    header h1{
-      margin:0;
-      font-size:22px;
-      letter-spacing:0.3px;
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0.3px;
     }
-    header p{
-      margin:6px 0 0 0;
-      color:var(--muted);
-      font-size:14px;
+    header p {
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    .card{
+    .card {
       background: var(--card);
-      border-radius:14px;
-      padding:20px;
+      border-radius: 14px;
+      padding: 20px;
       box-shadow: var(--shadow);
     }
 
-    .generator{
-      display:grid;
-      gap:20px;
+    .generator {
+      display: grid;
+      gap: 20px;
     }
 
-    .row{
-      display:grid;
+    .row {
+      display: grid;
       grid-template-columns: 160px 1fr;
-      gap:18px;
-      align-items:center;
+      gap: 18px;
+      align-items: center;
     }
 
-    .left{
-      display:flex;
-      gap:10px;
-      flex-direction:column;
-      align-items:flex-start;
+    .left {
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    .small-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      height:24px;
-      padding:0 12px;
-      border-radius:22px;
-      background:var(--accent);
-      color:#fff;
-      border:none;
-      cursor:pointer;
-      font-weight:600;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    .small-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 22px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
       transition: transform .08s ease, box-shadow .08s;
-      width:140px;
-      text-align:center;
+      width: 140px;
+      text-align: center;
     }
-    .small-btn:active{ transform: translateY(1px); }
-    .small-btn:focus{ outline:3px solid rgba(0,0,0,0.08); }
+    .small-btn:active { transform: translateY(1px); }
 
-    .right{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .display{
-      flex:1;
-      font-size:28px;
-      height:24px;
-      padding:6px 14px;
-      border-radius:18px;
-      border:2px solid #cecece;
-      box-shadow: 3px 4px 5px -1px rgba(0,0,0,0.12);
-      text-align:center;
-      background:#fff;
-      user-select:all;
+    .right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
 
-    .controls{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      white-space:nowrap;
+    .display {
+      flex: 1;
+      font-size: 28px;
+      height: 24px;
+      padding: 6px 14px;
+      border-radius: 18px;
+      border: 2px solid #cecece;
+      box-shadow: 3px 4px 5px -1px rgba(0, 0, 0, 0.12);
+      text-align: center;
+      background: #fff;
+      user-select: all;
     }
 
-    .btn{
-      height:24px;
-      padding:0 14px;
-      border-radius:12px;
-      border:none;
-      cursor:pointer;
-      background:#2a2a2a;
-      color:white;
-      font-weight:600;
-      min-width:120px;
-    }
-    .btn.secondary{
-      background:transparent;
-      color:#333;
-      border:1px solid #ddd;
-      min-width:24px;
-      padding:0 10px;
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      white-space: nowrap;
     }
 
-    .checkbox{
-      font-size:13px;
-      color:#444;
-      display:flex;
-      gap:8px;
-      align-items:center;
+    .btn {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: #2a2a2a;
+      color: white;
+      font-weight: 600;
+      min-width: 80px;
     }
 
-    .help{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:13px;
+    .btn.secondary {
+      background: transparent;
+      color: #333;
+      border: 1px solid #ddd;
+      min-width: 34px;
+      padding: 0 10px;
     }
 
-    /* contador de visitas */
-    footer {
-      text-align:center;
-      margin-top:30px;
+    .checkbox {
+      font-size: 13px;
+      color: #444;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .help {
+      margin-top: 12px;
       color: var(--muted);
-      font-size:14px;
+      font-size: 13px;
     }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     .contador {
-      font-weight:bold;
+      font-weight: bold;
       color: var(--accent);
     }
 
-    @media (max-width:640px){
-      .row{ grid-template-columns: 1fr; }
-      .left{ flex-direction:row; justify-content:space-between; width:100%; }
-      .small-btn{ width:28%; }
-      .controls{ flex-wrap:wrap; }
-      .display{ font-size:20px; height:28px; }
+    @media (max-width: 640px) {
+      .row { grid-template-columns: 1fr; }
+      .left { flex-direction: row; justify-content: space-between; width: 100%; }
+      .small-btn { width: 40%; }
+      .controls { flex-wrap: wrap; }
+      .display { font-size: 20px; height: 28px; }
     }
   </style>
 </head>
@@ -217,30 +217,28 @@
       </div>
 
       <div class="help">
-        Clique em <strong>GERAR</strong> ou no ícone ↺ para gerar um novo número.  
+        Clique em <strong>GERAR</strong> ou no ícone ↺ para gerar um novo número.<br>
         Use <strong>COPIAR</strong> para copiar para a área de transferência.
       </div>
     </div>
 
-    <!-- Contador de visitas -->
     <footer>
       <p>Total de visitas: <span class="contador" id="contador">...</span></p>
     </footer>
   </div>
 
   <script>
-    // ----- Funções de geração de CPF e CNPJ -----
+    // ----- Geradores -----
     function gerarCNPJ(pontuar) {
       const d = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10));
       const calcDV = (base, pesos) => {
-        let soma = 0;
-        for (let i = 0; i < base.length; i++) soma += base[i] * pesos[i];
+        let soma = base.reduce((acc, n, i) => acc + n * pesos[i], 0);
         let resto = soma % 11;
         return resto < 2 ? 0 : 11 - resto;
       };
-      const v0 = calcDV([...d, 0,0,0,1], [5,4,3,2,9,8,7,6,5,4,3,2]);
-      const v1 = calcDV([...d, 0,0,0,1,v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
-      const cnpj = [...d, 0,0,0,1, v0, v1];
+      const v0 = calcDV([...d, 0, 0, 0, 1], [5,4,3,2,9,8,7,6,5,4,3,2]);
+      const v1 = calcDV([...d, 0, 0, 0, 1, v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
+      const cnpj = [...d, 0, 0, 0, 1, v0, v1];
       return pontuar
         ? `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`
         : cnpj.join('');
@@ -249,8 +247,7 @@
     function gerarCPF(pontuar) {
       const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
       const calcDV = (nums, peso) => {
-        let soma = 0;
-        for (let i = 0; i < nums.length; i++) soma += nums[i] * (peso - i);
+        let soma = nums.reduce((acc, n, i) => acc + n * (peso - i), 0);
         let resto = soma % 11;
         return resto < 2 ? 0 : 11 - resto;
       };
@@ -262,6 +259,7 @@
         : cpf.join('');
     }
 
+    // ----- Copiar -----
     function copyToClipboard(text, el) {
       navigator.clipboard?.writeText(text).then(() => {
         const original = el.textContent;
@@ -270,39 +268,37 @@
       }).catch(() => alert("Copiar não suportado."));
     }
 
+    // ----- Eventos -----
     const cnpjInput = document.getElementById('cnpj-input');
     const cpfInput = document.getElementById('cpf-input');
 
+    // CNPJ
     document.getElementById('btn-gerar-cnpj').addEventListener('click', () => {
-      const pont = document.getElementById('pontuar-cnpj').checked;
-      cnpjInput.value = gerarCNPJ(pont);
+      cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
     });
     document.getElementById('cnpj-regen').addEventListener('click', () => {
-      const pont = document.getElementById('pontuar-cnpj').checked;
-      cnpjInput.value = gerarCNPJ(pont);
+      cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
     });
     document.getElementById('cnpj-copy').addEventListener('click', (e) => {
       if (!cnpjInput.value) return alert("Gere um CNPJ primeiro!");
       copyToClipboard(cnpjInput.value, e.currentTarget);
     });
 
+    // CPF
     document.getElementById('btn-gerar-cpf').addEventListener('click', () => {
-      const pont = document.getElementById('pontuar-cpf').checked;
-      cpfInput.value = gerarCPF(pont);
+      cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
     });
     document.getElementById('cpf-regen').addEventListener('click', () => {
-      const pont = document.getElementById('pontuar-cpf').checked;
-      cpfInput.value = gerarCPF(pont);
+      cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
     });
     document.getElementById('cpf-copy').addEventListener('click', (e) => {
       if (!cpfInput.value) return alert("Gere um CPF primeiro!");
       copyToClipboard(cpfInput.value, e.currentTarget);
     });
 
-    // ----- Contador de visitas (CountAPI) -----
+    // ----- Contador -----
     const namespace = "gerador_cpf_cnpj_veloz";
     const key = "visitas";
-
     fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
       .then(res => res.json())
       .then(data => {
