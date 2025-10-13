@@ -72,7 +72,7 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      height:34px;
+      height:24px;
       padding:0 12px;
       border-radius:22px;
       background:var(--accent);
@@ -115,7 +115,7 @@
     }
 
     .btn{
-      height:34px;
+      height:24px;
       padding:0 14px;
       border-radius:12px;
       border:none;
@@ -129,7 +129,7 @@
       background:transparent;
       color:#333;
       border:1px solid #ddd;
-      min-width:34px;
+      min-width:24px;
       padding:0 10px;
     }
 
@@ -154,10 +154,9 @@
       color: var(--muted);
       font-size:14px;
     }
-    #contador {
-      font-size: 2.5em;
-      font-weight: bold;
-      color: #007bff;
+    .contador {
+      font-weight:bold;
+      color: var(--accent);
     }
 
     @media (max-width:640px){
@@ -192,6 +191,7 @@
             <input id="cnpj-input" class="display" type="text" disabled />
             <div class="controls">
               <button class="btn" id="cnpj-copy">COPIAR</button>
+              <button class="btn secondary" id="cnpj-regen">↺</button>
             </div>
           </div>
         </div>
@@ -209,6 +209,7 @@
             <input id="cpf-input" class="display" type="text" disabled />
             <div class="controls">
               <button class="btn" id="cpf-copy">COPIAR</button>
+              <button class="btn secondary" id="cpf-regen">↺</button>
             </div>
           </div>
         </div>
@@ -216,16 +217,15 @@
       </div>
 
       <div class="help">
-        Clique em <strong>GERAR</strong> para gerar um novo número.  
+        Clique em <strong>GERAR</strong> ou no ícone ↺ para gerar um novo número.  
         Use <strong>COPIAR</strong> para copiar para a área de transferência.
       </div>
     </div>
 
     <!-- Contador de visitas -->
     <footer>
-<!-- Inicio codigo Contador -->
-<div align="center"><a title="contador de dias" href="https://www.calendario.cnt.br/ferramentas/contador-de-dias-calculadora-prazo-entre-datas"><img src="https://contador-gratis.com/contadores-de-visitas/111025062743568.gif"></a><div><a href="https://www.contador-gratis.com/" title="contador de visitas">Contador de Visitas</a></div></div>
-<!-- Fim do codigo Contador -->
+      <p>Total de visitas: <span class="contador" id="contador">...</span></p>
+    </footer>
   </div>
 
   <script>
@@ -277,7 +277,7 @@
       const pont = document.getElementById('pontuar-cnpj').checked;
       cnpjInput.value = gerarCNPJ(pont);
     });
-    document.getElementById('btn-gerar-cnpj').addEventListener('click', () => {
+    document.getElementById('cnpj-regen').addEventListener('click', () => {
       const pont = document.getElementById('pontuar-cnpj').checked;
       cnpjInput.value = gerarCNPJ(pont);
     });
@@ -290,7 +290,7 @@
       const pont = document.getElementById('pontuar-cpf').checked;
       cpfInput.value = gerarCPF(pont);
     });
-    document.getElementById('btn-gerar-cpf').addEventListener('click', () => {
+    document.getElementById('cpf-regen').addEventListener('click', () => {
       const pont = document.getElementById('pontuar-cpf').checked;
       cpfInput.value = gerarCPF(pont);
     });
@@ -299,9 +299,18 @@
       copyToClipboard(cpfInput.value, e.currentTarget);
     });
 
-<!-- Inicio codigo Contador -->
-<div align="center"><a title="contador de dias" href="https://www.calendario.cnt.br/ferramentas/contador-de-dias-calculadora-prazo-entre-datas"><img src="https://contador-gratis.com/contadores-de-visitas/111025083650982.gif"></a><div><a href="https://www.contador-gratis.com/" title="contador de visitas">Contador de Visitas</a></div></div>
-<!-- Fim do codigo Contador -->
+    // ----- Contador de visitas (CountAPI) -----
+    const namespace = "gerador_cpf_cnpj_veloz";
+    const key = "visitas";
+
+    fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("contador").textContent = data.value.toLocaleString("pt-BR");
+      })
+      .catch(() => {
+        document.getElementById("contador").textContent = "erro";
+      });
   </script>
 </body>
 </html>
