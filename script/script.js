@@ -1,9 +1,9 @@
  <script>
-    const cep = document.querySelector("#cep");
-    const logradouro = document.querySelector("input[id=address]");
-    const bairro = document.querySelector("input[id=neighborhood]");
-    const cidade = document.querySelector("input[id=city]");
-    const uf = document.querySelector("input[id=state]");
+    const cep = document.querySelector("#postalCode");
+    const logradouro = document.querySelector("#address");
+    const bairro = document.querySelector("#neighborhood");
+    const cidade = document.querySelector("#city");
+    const uf = document.querySelector("#state");
     const mensagem = document.querySelector("#mensagem");
 
     // Máscara do CEP: 00000-000
