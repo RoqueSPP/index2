@@ -1,38 +1,51 @@
-(function () {
-  const cep = document.querySelector("input[id=postalCode]");
+ <script>
+    const cep = document.querySelector("#cep");
+    const logradouro = document.querySelector("input[id=address]");
+    const bairro = document.querySelector("input[id=neighborhood]");
+    const cidade = document.querySelector("input[id=city]");
+    const uf = document.querySelector("input[id=state]");
+    const mensagem = document.querySelector("#mensagem");
 
-  if (!cep) return; // evita erro se o campo não existir
+    // Máscara do CEP: 00000-000
+    cep.addEventListener("input", () => {
+      let v = cep.value.replace(/\D/g, "").slice(0, 8);
+      if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5);
+      cep.value = v;
 
-  cep.addEventListener('blur', async () => {
-    const value = cep.value.replace(/\D/g, ''); // mantém apenas números
-
-    // CEP deve ter 8 dígitos
-    if (value.length !== 8) {
-      alert("CEP inválido. Digite um CEP com 8 números.");
-      return;
-    }
-
-    const url = `https://viacep.com.br/ws/${value}/json/`;
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Erro ao buscar CEP");
-
-      const json = await response.json();
-
-      if (json.erro) {
-        alert("CEP não encontrado!");
-        return;
+      // Quando o usuário termina de digitar (8 dígitos), busca automaticamente
+      if (v.length === 9) {
+        buscarCEP(v.replace("-", ""));
       }
+    });
 
-      document.querySelector('input[id=address]')?.setAttribute('value', json.logradouro || '');
-      document.querySelector('input[id=neighborhood]')?.setAttribute('value', json.bairro || '');
-      document.querySelector('input[id=city]')?.setAttribute('value', json.localidade || '');
-      document.querySelector('input[id=state]')?.setAttribute('value', json.uf || '');
-
-    } catch (err) {
-      console.error("Erro ao consultar o CEP:", err);
-      alert("Não foi possível consultar o CEP. Tente novamente mais tarde.");
+    function buscarCEP(cepNumerico) {
+      mensagem.textContent = "";
+      fetch(`https://viacep.com.br/ws/${cepNumerico}/json/`)
+        .then(resp => {
+          if (!resp.ok) throw new Error("Erro ao consultar o CEP");
+          return resp.json();
+        })
+        .then(data => {
+          if (data.erro) {
+            limparCampos();
+            mensagem.textContent = "CEP não encontrado.";
+          } else {
+            logradouro.value = data.logradouro || "";
+            bairro.value = data.bairro || "";
+            cidade.value = data.localidade || "";
+            uf.value = data.uf || "";
+          }
+        })
+        .catch(() => {
+          limparCampos();
+          mensagem.textContent = "Erro ao buscar o CEP.";
+        });
     }
-  });
-})();
+
+    function limparCampos() {
+      logradouro.value = "";
+      bairro.value = "";
+      cidade.value = "";
+      uf.value = "";
+    }
+  </script>
