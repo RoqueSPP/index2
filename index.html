@@ -145,9 +145,9 @@
 
       <div id="mensagem" class="error"></div>
     </form>
-    <button type="button" id="btnButton" onclick="window.location.href='https://roquespp.github.io/index2/pass';">
-      Validate Registration
-    </button>
+ <button type="button" id="btnValidate" onclick="validarFormulario()">
+  Validar Preenchimento
+</button>
   </form>
   </fieldset>
   <script>
@@ -201,6 +201,39 @@
       uf.value = "";
     }
   </script>
+    <script>
+  function validarFormulario() {
+    const camposObrigatorios = document.querySelectorAll(
+      'input[required], select'
+    );
+    let formularioValido = true;
+    let camposInvalidos = [];
+
+    camposObrigatorios.forEach(campo => {
+      if (
+        campo.tagName === "SELECT" &&
+        (campo.value === "" || campo.value === "--Select--")
+      ) {
+        formularioValido = false;
+        camposInvalidos.push(campo);
+      } else if (campo.tagName === "INPUT" && campo.value.trim() === "") {
+        formularioValido = false;
+        camposInvalidos.push(campo);
+      }
+    });
+
+    if (!formularioValido) {
+      alert("Por favor, preencha todos os campos obrigatórios corretamente.");
+      // Destaque visual (opcional)
+      camposInvalidos.forEach(campo => {
+        campo.style.border = "2px solid red";
+      });
+    } else {
+      // Redireciona se tudo estiver OK
+      window.location.href = "https://roquespp.github.io/index2/pass";
+    }
+  }
+</script>
   <footer>
     &copy; 2025 - Página de Testes | Desenvolvido por Roque
   </footer>
