@@ -30,10 +30,10 @@
             limparCampos();
             mensagem.textContent = "CEP não encontrado.";
           } else {
-            logradouro.value = data.logradouro || "";
-            bairro.value = data.bairro || "";
-            cidade.value = data.localidade || "";
-            uf.value = data.uf || "";
+            address.value = data.logradouro || "";
+            neighborhood.value = data.bairro || "";
+            city.value = data.localidade || "";
+            state.value = data.uf || "";
           }
         })
         .catch(() => {
