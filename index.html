@@ -124,45 +124,35 @@
     </fieldset>
 
     <fieldset>
-      <legend>Address</legend>
-      <div class="two-col">
-        <div>
-          <label for="postalCode">Postal Code</label>
-          <input type="number" id="postalCode" placeholder="Insert your postal code" required>
-        </div>
-        <div>
-          <label for="address">Address</label>
-          <input type="text" id="address" placeholder="Street name" required>
-        </div>
-        <div>
-          <label for="addressNumber">Address Number</label>
-          <input type="number" id="addressNumber" placeholder="Insert your address number" required>
-        </div>
-        <div>
-          <label for="neighborhood">Neighborhood</label>
-          <input type="text" id="neighborhood" placeholder="Neighborhood" required>
-        </div>
-        <div>
-          <label for="city">City</label>
-          <input type="text" id="city" placeholder="City" required>
-        </div>
-        <div>
-          <label for="state">State</label>
-          <input type="text" id="state" placeholder="State" required>
-        </div>
-      </div>
-    </fieldset>
-    <div id="mensagem" class="error"></div>
+      <form>
+      <label for="cep">CEP</label>
+      <input type="text" id="cep" name="cep" maxlength="9" placeholder="00000-000" autocomplete="postal-code">
+
+      <label for="logradouro">Logradouro</label>
+      <input type="text" id="logradouro" name="logradouro" placeholder="Rua, Avenida, etc.">
+
+      <label for="bairro">Bairro</label>
+      <input type="text" id="bairro" name="bairro">
+
+      <label for="cidade">Cidade</label>
+      <input type="text" id="cidade" name="cidade">
+
+      <label for="uf">Estado (UF)</label>
+      <input type="text" id="uf" name="uf" maxlength="2">
+
+      <div id="mensagem" class="error"></div>
+    </form>
     <button type="button" id="btnButton" onclick="window.location.href='https://roquespp.github.io/index2/pass';">
       Validate Registration
     </button>
   </form>
- <script>
-    const cep = document.querySelector("#postalCode");
-    const logradouro = document.querySelector("#address");
-    const bairro = document.querySelector("#neighborhood");
-    const cidade = document.querySelector("#city");
-    const uf = document.querySelector("#state");
+ 
+  <script>
+    const cep = document.querySelector("#cep");
+    const logradouro = document.querySelector("#logradouro");
+    const bairro = document.querySelector("#bairro");
+    const cidade = document.querySelector("#cidade");
+    const uf = document.querySelector("#uf");
     const mensagem = document.querySelector("#mensagem");
 
     // Máscara do CEP: 00000-000
@@ -189,10 +179,10 @@
             limparCampos();
             mensagem.textContent = "CEP não encontrado.";
           } else {
-            address.value = data.logradouro || "";
-            neighborhood.value = data.bairro || "";
-            city.value = data.localidade || "";
-            state.value = data.uf || "";
+            logradouro.value = data.logradouro || "";
+            bairro.value = data.bairro || "";
+            cidade.value = data.localidade || "";
+            uf.value = data.uf || "";
           }
         })
         .catch(() => {
