@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gerador de CPF e CNPJ</title>
+  <title>Gerador e Validador de CPF e CNPJ</title>
   <style>
     :root {
       --bg: #f4f4f9;
@@ -31,11 +31,13 @@
       text-align: center;
       margin-bottom: 18px;
     }
+
     header h1 {
       margin: 0;
       font-size: 22px;
       letter-spacing: 0.3px;
     }
+
     header p {
       margin: 6px 0 0 0;
       color: var(--muted);
@@ -47,6 +49,7 @@
       border-radius: 14px;
       padding: 20px;
       box-shadow: var(--shadow);
+      margin-bottom: 24px;
     }
 
     .generator {
@@ -61,14 +64,13 @@
       align-items: center;
     }
 
-    /* Alinhamento lateral */
-.left {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 16px;
-  flex-wrap: nowrap;
-}
+    .left {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+      flex-wrap: nowrap;
+    }
 
     .small-btn {
       display: inline-flex;
@@ -87,7 +89,10 @@
       width: 140px;
       text-align: center;
     }
-    .small-btn:active { transform: translateY(1px); }
+
+    .small-btn:active {
+      transform: translateY(1px);
+    }
 
     .right {
       display: flex;
@@ -97,10 +102,9 @@
 
     .display {
       flex: 1;
-      font-size: 28px;
-      height: 24px;
-      padding: 6px 14px;
-      border-radius: 18px;
+      font-size: 20px;
+      padding: 8px 14px;
+      border-radius: 12px;
       border: 2px solid #cecece;
       box-shadow: 3px 4px 5px -1px rgba(0, 0, 0, 0.12);
       text-align: center;
@@ -135,17 +139,18 @@
       padding: 0 10px;
     }
 
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0;
-}
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+    }
 
     .help {
       margin-top: 12px;
       color: var(--muted);
       font-size: 13px;
+      text-align: center;
     }
 
     footer {
@@ -160,27 +165,57 @@
       color: var(--accent);
     }
 
+    #resultado {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .valido {
+      color: green;
+    }
+
+    .invalido {
+      color: red;
+    }
+
     @media (max-width: 640px) {
-      .row { grid-template-columns: 1fr; }
-      .left { flex-direction: column; align-items: stretch; }
-      .small-btn { width: 100%; }
-      .controls { flex-wrap: wrap; }
-      .display { font-size: 20px; height: 28px; }
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .left {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .small-btn {
+        width: 100%;
+      }
+
+      .controls {
+        flex-wrap: wrap;
+      }
+
+      .display {
+        font-size: 18px;
+        height: 28px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Gerador de CPF e CNPJ</h1>
-      <p>Use os botões à esquerda para gerar os números.</p>
+      <h1>Gerador e Validador de CPF e CNPJ</h1>
+      <p>Gere números válidos e valide CPFs com facilidade.</p>
     </header>
 
     <div class="card">
       <div class="generator">
 
         <!-- CNPJ -->
-        <div class="row" aria-label="Gerador de CNPJ">
+        <div class="row">
           <div class="left">
             <button class="small-btn" id="btn-gerar-cnpj">GERAR CNPJ</button>
             <div class="checkbox">
@@ -198,7 +233,7 @@
         </div>
 
         <!-- CPF -->
-        <div class="row" aria-label="Gerador de CPF">
+        <div class="row">
           <div class="left">
             <button class="small-btn" id="btn-gerar-cpf">GERAR CPF</button>
             <div class="checkbox">
@@ -215,12 +250,22 @@
           </div>
         </div>
 
+        <!-- Validador de CPF -->
+        <div class="row">
+          <div class="left">
+            <button class="small-btn" onclick="verificarCPF()">VALIDAR CPF</button>
+          </div>
+          <div class="right">
+            <input type="text" id="cpf" class="display" maxlength="14" placeholder="Digite o CPF (somente números)">
+          </div>
+        </div>
+        <div id="resultado" style="text-align:center;"></div>
       </div>
+    </div>
 
-      <div class="help">
-        Clique em <strong>GERAR</strong> ou no ícone ↺ para gerar um novo número.<br>
-        Use <strong>COPIAR</strong> para copiar para a área de transferência.
-      </div>
+    <div class="help">
+      Clique em <strong>GERAR</strong> ou no ícone ↺ para criar novos números.<br>
+      Use <strong>COPIAR</strong> para copiar o resultado.
     </div>
 
     <footer>
@@ -239,7 +284,7 @@
       };
       const v0 = calcDV([...d, 0, 0, 0, 1], [5,4,3,2,9,8,7,6,5,4,3,2]);
       const v1 = calcDV([...d, 0, 0, 0, 1, v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
-      const cnpj = [...d, 0, 0, 0, 1, v0, v1];
+      const cnpj = [...d, 0,0,0,1, v0, v1];
       return pontuar
         ? `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`
         : cnpj.join('');
@@ -297,17 +342,34 @@
       copyToClipboard(cpfInput.value, e.currentTarget);
     });
 
-    // ----- Contador -----
-    const namespace = "gerador_cpf_cnpj_veloz";
-    const key = "visitas";
-    fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("contador").textContent = data.value.toLocaleString("pt-BR");
-      })
-      .catch(() => {
-        document.getElementById("contador").textContent = "erro";
-      });
+    // ----- Validador -----
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/\D/g, '');
+      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+      let soma = 0;
+      for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+      let resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+      soma = 0;
+      for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(10))) return false;
+      return true;
+    }
+
+    function verificarCPF() {
+      const cpf = document.getElementById("cpf").value;
+      const resultado = document.getElementById("resultado");
+      if (validarCPF(cpf)) {
+        resultado.textContent = "✅ CPF válido";
+        resultado.className = "valido";
+      } else {
+        resultado.textContent = "❌ CPF inválido";
+        resultado.className = "invalido";
+      }
+    }
   </script>
 </body>
 </html>
