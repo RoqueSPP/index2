@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gerador e Validador de CPF e CNPJ</title>
+  <title>Gerador e Validador de CPF, CNPJ e Nomes</title>
   <style>
     :root {
       --bg: #f4f4f9;
@@ -90,9 +90,7 @@
       text-align: center;
     }
 
-    .small-btn:active {
-      transform: translateY(1px);
-    }
+    .small-btn:active { transform: translateY(1px); }
 
     .right {
       display: flex;
@@ -171,50 +169,42 @@
       font-size: 16px;
     }
 
-    .valido {
-      color: green;
-    }
-
-    .invalido {
-      color: red;
-    }
+    .valido { color: green; }
+    .invalido { color: red; }
 
     @media (max-width: 640px) {
-      .row {
-        grid-template-columns: 1fr;
-      }
-
-      .left {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .small-btn {
-        width: 100%;
-      }
-
-      .controls {
-        flex-wrap: wrap;
-      }
-
-      .display {
-        font-size: 18px;
-        height: 28px;
-      }
+      .row { grid-template-columns: 1fr; }
+      .left { flex-direction: column; align-items: stretch; }
+      .small-btn { width: 100%; }
+      .controls { flex-wrap: wrap; }
+      .display { font-size: 18px; height: 28px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Gerador e Validador de CPF e CNPJ com validador de cpf</h1>
-      <p>Gere números válidos e valide CPFs com facilidade.</p>
+      <h1>Gerador e Validador de CPF, CNPJ e Nomes</h1>
+      <p>Gere nomes, números válidos e valide CPFs com facilidade.</p>
     </header>
 
     <div class="card">
       <div class="generator">
+        <!-- GERADOR DE NOMES -->
+        <div class="row">
+          <div class="left">
+            <button class="small-btn" id="btn-gerar-nome">GERAR NOME</button>
+          </div>
+          <div class="right">
+            <input id="nome-input" class="display" type="text" placeholder="Nome gerado..." disabled />
+            <div class="controls">
+              <button class="btn" id="nome-copy">COPIAR</button>
+              <button class="btn secondary" id="nome-regen">↺</button>
+            </div>
+          </div>
+        </div>
 
-        <!-- CNPJ -->
+        <!-- GERADOR DE CNPJ -->
         <div class="row">
           <div class="left">
             <button class="small-btn" id="btn-gerar-cnpj">GERAR CNPJ</button>
@@ -232,7 +222,7 @@
           </div>
         </div>
 
-        <!-- CPF -->
+        <!-- GERADOR DE CPF -->
         <div class="row">
           <div class="left">
             <button class="small-btn" id="btn-gerar-cpf">GERAR CPF</button>
@@ -250,7 +240,7 @@
           </div>
         </div>
 
-        <!-- Validador de CPF -->
+        <!-- VALIDADOR DE CPF -->
         <div class="row">
           <div class="left">
             <button class="small-btn" onclick="verificarCPF()">VALIDAR CPF</button>
@@ -264,108 +254,154 @@
     </div>
 
     <div class="help">
-      Clique em <strong>GERAR</strong> ou no ícone ↺ para criar novos números.<br>
+      Clique em <strong>GERAR</strong> ou no ícone ↺ para criar novos valores.<br>
       Use <strong>COPIAR</strong> para copiar o resultado.
     </div>
+
+    <footer>
+      <p>Total de visitas: <span class="contador" id="contador">...</span></p>
+    </footer>
   </div>
 
   <script>
-    // ----- Geradores -----
-    function gerarCNPJ(pontuar) {
-      const d = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10));
-      const calcDV = (base, pesos) => {
-        let soma = base.reduce((acc, n, i) => acc + n * pesos[i], 0);
-        let resto = soma % 11;
-        return resto < 2 ? 0 : 11 - resto;
-      };
-      const v0 = calcDV([...d, 0, 0, 0, 1], [5,4,3,2,9,8,7,6,5,4,3,2]);
-      const v1 = calcDV([...d, 0, 0, 0, 1, v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
-      const cnpj = [...d, 0,0,0,1, v0, v1];
-      return pontuar
-        ? `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`
-        : cnpj.join('');
+  // ---------- GERADOR DE NOMES ----------
+  async function gerarNome() {
+    const res = await fetch('https://randomuser.me/api/?nat=br');
+    if (res.ok) {
+      const data = await res.json();
+      const nome = data.results[0].name.first;
+      const sobreNome = data.results[0].name.last;
+      return `${nome} ${sobreNome}`;
+    } else {
+      throw new Error("Erro ao gerar nome");
     }
+  }
 
-    function gerarCPF(pontuar) {
-      const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
-      const calcDV = (nums, peso) => {
-        let soma = nums.reduce((acc, n, i) => acc + n * (peso - i), 0);
-        let resto = soma % 11;
-        return resto < 2 ? 0 : 11 - resto;
-      };
-      const d1 = calcDV(base, 10);
-      const d2 = calcDV([...base, d1], 11);
-      const cpf = [...base, d1, d2];
-      return pontuar
-        ? `${cpf.slice(0,3).join('')}.${cpf.slice(3,6).join('')}.${cpf.slice(6,9).join('')}-${cpf.slice(9).join('')}`
-        : cpf.join('');
+  async function atualizarNome() {
+    const input = document.getElementById("nome-input");
+    input.value = "Gerando...";
+    try {
+      const nome = await gerarNome();
+      input.value = nome;
+    } catch {
+      input.value = "Erro ao gerar nome!";
     }
+  }
 
-    // ----- Copiar -----
-    function copyToClipboard(text, el) {
-      navigator.clipboard?.writeText(text).then(() => {
-        const original = el.textContent;
-        el.textContent = "COPIADO!";
-        setTimeout(() => el.textContent = original, 900);
-      }).catch(() => alert("Copiar não suportado."));
+  document.getElementById("btn-gerar-nome").addEventListener("click", atualizarNome);
+  document.getElementById("nome-regen").addEventListener("click", atualizarNome);
+  document.getElementById("nome-copy").addEventListener("click", () => {
+    const input = document.getElementById("nome-input");
+    if (input.value && !input.value.includes("Gerando")) {
+      navigator.clipboard.writeText(input.value);
+      alert("Nome copiado!");
     }
+  });
 
-    // ----- Eventos -----
-    const cnpjInput = document.getElementById('cnpj-input');
-    const cpfInput = document.getElementById('cpf-input');
+  // ---------- GERADOR DE CNPJ ----------
+  function gerarCNPJ(pontuar) {
+    const d = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10));
+    const calcDV = (base, pesos) => {
+      let soma = base.reduce((acc, n, i) => acc + n * pesos[i], 0);
+      let resto = soma % 11;
+      return resto < 2 ? 0 : 11 - resto;
+    };
+    const v0 = calcDV([...d, 0, 0, 0, 1], [5,4,3,2,9,8,7,6,5,4,3,2]);
+    const v1 = calcDV([...d, 0, 0, 0, 1, v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
+    const cnpj = [...d, 0,0,0,1, v0, v1];
+    return pontuar
+      ? `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`
+      : cnpj.join('');
+  }
 
-    // CNPJ
-    document.getElementById('btn-gerar-cnpj').addEventListener('click', () => {
-      cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
-    });
-    document.getElementById('cnpj-regen').addEventListener('click', () => {
-      cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
-    });
-    document.getElementById('cnpj-copy').addEventListener('click', (e) => {
-      if (!cnpjInput.value) return alert("Gere um CNPJ primeiro!");
-      copyToClipboard(cnpjInput.value, e.currentTarget);
-    });
+  // ---------- GERADOR DE CPF ----------
+  function gerarCPF(pontuar) {
+    const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+    const calcDV = (nums, peso) => {
+      let soma = nums.reduce((acc, n, i) => acc + n * (peso - i), 0);
+      let resto = soma % 11;
+      return resto < 2 ? 0 : 11 - resto;
+    };
+    const d1 = calcDV(base, 10);
+    const d2 = calcDV([...base, d1], 11);
+    const cpf = [...base, d1, d2];
+    return pontuar
+      ? `${cpf.slice(0,3).join('')}.${cpf.slice(3,6).join('')}.${cpf.slice(6,9).join('')}-${cpf.slice(9).join('')}`
+      : cpf.join('');
+  }
 
-    // CPF
-    document.getElementById('btn-gerar-cpf').addEventListener('click', () => {
-      cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
+  // ---------- COPIAR ----------
+  function copyToClipboard(text, el) {
+    navigator.clipboard?.writeText(text).then(() => {
+      const original = el.textContent;
+      el.textContent = "COPIADO!";
+      setTimeout(() => el.textContent = original, 900);
     });
-    document.getElementById('cpf-regen').addEventListener('click', () => {
-      cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
-    });
-    document.getElementById('cpf-copy').addEventListener('click', (e) => {
-      if (!cpfInput.value) return alert("Gere um CPF primeiro!");
-      copyToClipboard(cpfInput.value, e.currentTarget);
-    });
+  }
 
-    // ----- Validador -----
-    function validarCPF(cpf) {
-      cpf = cpf.replace(/\D/g, '');
-      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-      let soma = 0;
-      for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
-      let resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      if (resto !== parseInt(cpf.charAt(9))) return false;
-      soma = 0;
-      for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
-      resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      if (resto !== parseInt(cpf.charAt(10))) return false;
-      return true;
+  const cnpjInput = document.getElementById('cnpj-input');
+  const cpfInput = document.getElementById('cpf-input');
+
+  document.getElementById('btn-gerar-cnpj').addEventListener('click', () => {
+    cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
+  });
+  document.getElementById('cnpj-regen').addEventListener('click', () => {
+    cnpjInput.value = gerarCNPJ(document.getElementById('pontuar-cnpj').checked);
+  });
+  document.getElementById('cnpj-copy').addEventListener('click', (e) => {
+    if (!cnpjInput.value) return alert("Gere um CNPJ primeiro!");
+    copyToClipboard(cnpjInput.value, e.currentTarget);
+  });
+
+  document.getElementById('btn-gerar-cpf').addEventListener('click', () => {
+    cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
+  });
+  document.getElementById('cpf-regen').addEventListener('click', () => {
+    cpfInput.value = gerarCPF(document.getElementById('pontuar-cpf').checked);
+  });
+  document.getElementById('cpf-copy').addEventListener('click', (e) => {
+    if (!cpfInput.value) return alert("Gere um CPF primeiro!");
+    copyToClipboard(cpfInput.value, e.currentTarget);
+  });
+
+  // ---------- VALIDADOR ----------
+  function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
+    let resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[9])) return false;
+    soma = 0;
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf[i]) * (11 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[10])) return false;
+    return true;
+  }
+
+  function verificarCPF() {
+    const cpf = document.getElementById("cpf").value;
+    const resultado = document.getElementById("resultado");
+    if (validarCPF(cpf)) {
+      resultado.textContent = "✅ CPF válido";
+      resultado.className = "valido";
+    } else {
+      resultado.textContent = "❌ CPF inválido";
+      resultado.className = "invalido";
     }
+  }
 
-    function verificarCPF() {
-      const cpf = document.getElementById("cpf").value;
-      const resultado = document.getElementById("resultado");
-      if (validarCPF(cpf)) {
-        resultado.textContent = "✅ CPF válido";
-        resultado.className = "valido";
-      } else {
-        resultado.textContent = "❌ CPF inválido";
-        resultado.className = "invalido";
-      }
-    }
+  // ---------- CONTADOR ----------
+  fetch(`https://api.countapi.xyz/hit/gerador_multi_veloz/visitas`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("contador").textContent = data.value.toLocaleString("pt-BR");
+    })
+    .catch(() => {
+      document.getElementById("contador").textContent = "erro";
+    });
   </script>
 </body>
 </html>
