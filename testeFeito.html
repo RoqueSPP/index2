@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parabéns!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            text-align: center;
+            padding-top: 15%;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+        }
+        p {
+            font-size: 1.5em;
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Parabéns! 🎉</h1>
+    <p>Você passou no teste com sucesso!</p>
+
+    <div class="confetti"></div>
+
+    <script>
+        // Efeito simples de confete animado
+        const confettiContainer = document.querySelector('.confetti');
+        for (let i = 0; i < 100; i++) {
+            const confetto = document.createElement('div');
+            confetto.style.position = 'absolute';
+            confetto.style.width = '10px';
+            confetto.style.height = '10px';
+            confetto.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetto.style.top = `${Math.random() * window.innerHeight}px`;
+            confetto.style.left = `${Math.random() * window.innerWidth}px`;
+            confetto.style.opacity = 0.8;
+            confetto.style.transform = `rotate(${Math.random() * 360}deg)`;
+            confettiContainer.appendChild(confetto);
+
+            let fall = Math.random() * 3 + 2;
+            setInterval(() => {
+                confetto.style.top = `${parseFloat(confetto.style.top) + fall}px`;
+                if (parseFloat(confetto.style.top) > window.innerHeight) {
+                    confetto.style.top = '-10px';
+                }
+            }, 30);
+        }
+    </script>
+</body>
+</html>
