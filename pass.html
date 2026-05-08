@@ -239,7 +239,23 @@
             </div>
           </div>
         </div>
-
+<!-- GERADOR DE CNPJ ALFANUMÉRICO -->
+<div class="row">
+  <div class="left">
+    <button class="small-btn" id="btn-gerar-cnpj-alpha">CNPJ ALFA</button>
+    <div class="checkbox">
+      <input type="checkbox" id="pontuar-cnpj-alpha" checked />
+      <label for="pontuar-cnpj-alpha">Pontuação</label>
+    </div>
+  </div>
+  <div class="right">
+    <input id="cnpj-alpha-input" class="display" type="text" disabled />
+    <div class="controls">
+      <button class="btn" id="cnpj-alpha-copy">COPIAR</button>
+      <button class="btn secondary" id="cnpj-alpha-regen">↺</button>
+    </div>
+  </div>
+</div>
         <!-- VALIDADOR DE CPF -->
         <div class="row">
           <div class="left">
@@ -258,9 +274,6 @@
       Use <strong>COPIAR</strong> para copiar o resultado.
     </div>
 
-    <footer>
-      <p>Total de visitas: <span class="contador" id="contador">...</span></p>
-    </footer>
   </div>
 
   <script>
@@ -393,15 +406,40 @@
     }
   }
 
-  // ---------- CONTADOR ----------
-  fetch(`https://api.countapi.xyz/hit/gerador_multi_veloz/visitas`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("contador").textContent = data.value.toLocaleString("pt-BR");
-    })
-    .catch(() => {
-      document.getElementById("contador").textContent = "erro";
-    });
+// ---------- GERADOR DE CNPJ ALFANUMÉRICO ----------
+function gerarCNPJAlfanumerico(pontuar) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+  const randomChar = () => chars[Math.floor(Math.random() * chars.length)];
+
+  let base = '';
+  for (let i = 0; i < 12; i++) {
+    base += randomChar();
+  }
+
+  return pontuar
+    ? `${base.slice(0,2)}.${base.slice(2,5)}.${base.slice(5,8)}/${base.slice(8,12)}`
+    : base;
+}
+
+const cnpjAlphaInput = document.getElementById('cnpj-alpha-input');
+
+document.getElementById('btn-gerar-cnpj-alpha').addEventListener('click', () => {
+  cnpjAlphaInput.value = gerarCNPJAlfanumerico(
+    document.getElementById('pontuar-cnpj-alpha').checked
+  );
+});
+
+document.getElementById('cnpj-alpha-regen').addEventListener('click', () => {
+  cnpjAlphaInput.value = gerarCNPJAlfanumerico(
+    document.getElementById('pontuar-cnpj-alpha').checked
+  );
+});
+
+document.getElementById('cnpj-alpha-copy').addEventListener('click', (e) => {
+  if (!cnpjAlphaInput.value) return alert("Gere um CNPJ Alfa primeiro!");
+  copyToClipboard(cnpjAlphaInput.value, e.currentTarget);
+});
   </script>
 </body>
 </html>
