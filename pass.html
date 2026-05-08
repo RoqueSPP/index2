@@ -408,38 +408,52 @@
 
 // ---------- GERADOR DE CNPJ ALFANUMÉRICO ----------
 function gerarCNPJAlfanumerico(pontuar) {
+
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-  const randomChar = () => chars[Math.floor(Math.random() * chars.length)];
+  const pesos1 = [5,4,3,2,9,8,7,6,5,4,3,2];
+  const pesos2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
 
+  function randomChar() {
+    return chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  // Converte caractere conforme regra oficial:
+  // valor ASCII - 48
+  function valorChar(c) {
+    return c.charCodeAt(0) - 48;
+  }
+
+  function calcularDV(base, pesos) {
+    let soma = 0;
+
+    for (let i = 0; i < pesos.length; i++) {
+      soma += valorChar(base[i]) * pesos[i];
+    }
+
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  }
+
+  // gera os 12 caracteres
   let base = '';
+
   for (let i = 0; i < 12; i++) {
     base += randomChar();
   }
 
+  // calcula DV1
+  const dv1 = calcularDV(base, pesos1);
+
+  // calcula DV2
+  const dv2 = calcularDV(base + dv1, pesos2);
+
+  const cnpj = base + dv1 + dv2;
+
   return pontuar
-    ? `${base.slice(0,2)}.${base.slice(2,5)}.${base.slice(5,8)}/${base.slice(8,12)}`
-    : base;
+    ? `${cnpj.slice(0,2)}.${cnpj.slice(2,5)}.${cnpj.slice(5,8)}/${cnpj.slice(8,12)}-${cnpj.slice(12,14)}`
+    : cnpj;
 }
-
-const cnpjAlphaInput = document.getElementById('cnpj-alpha-input');
-
-document.getElementById('btn-gerar-cnpj-alpha').addEventListener('click', () => {
-  cnpjAlphaInput.value = gerarCNPJAlfanumerico(
-    document.getElementById('pontuar-cnpj-alpha').checked
-  );
-});
-
-document.getElementById('cnpj-alpha-regen').addEventListener('click', () => {
-  cnpjAlphaInput.value = gerarCNPJAlfanumerico(
-    document.getElementById('pontuar-cnpj-alpha').checked
-  );
-});
-
-document.getElementById('cnpj-alpha-copy').addEventListener('click', (e) => {
-  if (!cnpjAlphaInput.value) return alert("Gere um CNPJ Alfa primeiro!");
-  copyToClipboard(cnpjAlphaInput.value, e.currentTarget);
-});
   </script>
 </body>
 </html>
