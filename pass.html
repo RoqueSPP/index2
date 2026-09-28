@@ -3,137 +3,153 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0e1118" />
   <title>Gerador e Validador de CPF, CNPJ e Nomes</title>
 
   <style>
     :root {
-      --bg: #f4f4f9;
-      --card: #ffffff;
-      --accent: #090b09;
-      --muted: #777;
-      --shadow: 0 6px 14px rgba(0,0,0,.08);
+      color-scheme: dark;
+      --bg: #0e1118;
+      --card: #151a24;
+      --field: #0e1118;
+      --line: #252d3d;
+      --line-strong: #37425a;
+      --text: #e7ebf3;
+      --muted: #8e99ad;
+      --accent: #8b9bff;
+      --accent-ink: #10142b;
+      --ok: #5fd3a0;
+      --bad: #ff7a85;
+      --font: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+      --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
     }
 
-    html,body{
-      margin:0;
-      font-family:Arial,sans-serif;
-      background:var(--bg);
-      color:#222;
+    * { box-sizing: border-box; margin: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .container{
-      max-width:900px;
-      margin:40px auto;
-      padding:24px;
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 20px;
     }
 
-    header{
-      text-align:center;
-      margin-bottom:18px;
+    header { margin-bottom: 26px; }
+    header h1 { font-size: 1.8rem; letter-spacing: -0.02em; line-height: 1.2; }
+    header p { color: var(--muted); margin-top: 6px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
     }
 
-    .card{
-      background:#fff;
-      border-radius:14px;
-      padding:20px;
-      box-shadow:var(--shadow);
+    .row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 20px;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .row:last-of-type { border-bottom: 0; }
+
+    .left { display: grid; gap: 10px; }
+
+    .right { display: flex; gap: 8px; align-items: center; min-width: 0; }
+
+    button { font: inherit; cursor: pointer; transition: background .15s, border-color .15s, transform .1s; }
+    button:active { transform: scale(.98); }
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
-    .generator{
-      display:grid;
-      gap:20px;
+    .small-btn {
+      height: 40px;
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 700;
+    }
+    .small-btn:hover { background: #a3b0ff; }
+
+    .display {
+      flex: 1;
+      min-width: 0;
+      height: 40px;
+      padding: 0 14px;
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      letter-spacing: .02em;
+      color: var(--text);
+      background: var(--field);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      text-align: left;
+    }
+    .display::placeholder { color: #586479; font-family: var(--font); letter-spacing: 0; }
+    .display:hover { border-color: var(--line-strong); }
+    .display:focus { border-color: var(--accent); }
+
+    .controls { display: flex; gap: 8px; }
+
+    .btn {
+      height: 40px;
+      padding: 0 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .btn:hover { background: #1d2534; }
+    .btn.secondary { width: 40px; padding: 0; color: var(--muted); font-size: 1.15rem; }
+    .btn.secondary:hover { color: var(--text); }
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .checkbox input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+    .checkbox label { cursor: pointer; }
+
+    #resultado {
+      margin: 0 24px 22px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+    }
+    #resultado.valido,
+    #resultado.invalido { display: block; }
+    .valido   { color: var(--ok);  background: rgba(95, 211, 160, .1); border: 1px solid rgba(95, 211, 160, .35); }
+    .invalido { color: var(--bad); background: rgba(255, 122, 133, .1); border: 1px solid rgba(255, 122, 133, .35); }
+
+    @media (max-width: 640px) {
+      .container { padding: 28px 14px; }
+      .row { grid-template-columns: 1fr; gap: 12px; padding: 18px; }
+      .left { grid-template-columns: 1fr auto; align-items: center; }
+      #resultado { margin: 0 18px 18px; }
     }
 
-    .row{
-      display:grid;
-      grid-template-columns:240px 1fr;
-      gap:18px;
-      align-items:center;
-    }
-
-    .left{
-      display:flex;
-      align-items:center;
-      gap:16px;
-    }
-
-    .right{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .small-btn{
-      height:36px;
-      padding:0 16px;
-      border:none;
-      border-radius:22px;
-      background:#111;
-      color:#fff;
-      cursor:pointer;
-      font-weight:bold;
-      width:160px;
-    }
-
-    .display{
-      flex:1;
-      font-size:20px;
-      padding:8px 14px;
-      border-radius:12px;
-      border:2px solid #ccc;
-      text-align:center;
-      background:#fff;
-    }
-
-    .controls{
-      display:flex;
-      gap:8px;
-    }
-
-    .btn{
-      height:32px;
-      padding:0 14px;
-      border:none;
-      border-radius:12px;
-      cursor:pointer;
-      background:#2a2a2a;
-      color:#fff;
-      font-weight:bold;
-    }
-
-    .secondary{
-      background:#fff;
-      color:#222;
-      border:1px solid #ccc;
-    }
-
-    .checkbox{
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-
-    #resultado{
-      margin-top:10px;
-      font-weight:bold;
-      text-align:center;
-    }
-
-    .valido{ color:green; }
-    .invalido{ color:red; }
-
-    @media(max-width:640px){
-      .row{
-        grid-template-columns:1fr;
-      }
-
-      .right{
-        flex-wrap:wrap;
-      }
-
-      .small-btn{
-        width:100%;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
     }
   </style>
 </head>
@@ -144,166 +160,90 @@
 
   <header>
     <h1>Gerador e Validador</h1>
-    <p>CPF, CNPJ, CNPJ Alfanumérico e Nomes</p>
+    <p>CPF, CNPJ, CNPJ alfanumérico e nomes para testes.</p>
   </header>
 
   <div class="card">
 
-    <div class="generator">
-
-      <!-- NOME -->
-      <div class="row">
-
-        <div class="left">
-          <button class="small-btn" id="btn-gerar-nome">
-            GERAR NOME
-          </button>
-        </div>
-
-        <div class="right">
-
-          <input
-            id="nome-input"
-            class="display"
-            type="text"
-            disabled
-          >
-
-          <div class="controls">
-            <button class="btn" id="nome-copy">COPIAR</button>
-            <button class="btn secondary" id="nome-regen">↺</button>
-          </div>
-
-        </div>
-
+    <!-- NOME -->
+    <div class="row">
+      <div class="left">
+        <button class="small-btn" id="btn-gerar-nome">Gerar nome</button>
       </div>
-
-      <!-- CNPJ -->
-      <div class="row">
-
-        <div class="left">
-
-          <button class="small-btn" id="btn-gerar-cnpj">
-            GERAR CNPJ
-          </button>
-
-          <div class="checkbox">
-            <input type="checkbox" id="pontuar-cnpj" checked>
-            <label>Pontuação</label>
-          </div>
-
+      <div class="right">
+        <input id="nome-input" class="display" type="text" readonly placeholder="Nome gerado" aria-label="Nome gerado">
+        <div class="controls">
+          <button class="btn" id="nome-copy">Copiar</button>
+          <button class="btn secondary" id="nome-regen" title="Gerar outro" aria-label="Gerar outro nome">↺</button>
         </div>
-
-        <div class="right">
-
-          <input
-            id="cnpj-input"
-            class="display"
-            type="text"
-            disabled
-          >
-
-          <div class="controls">
-            <button class="btn" id="cnpj-copy">COPIAR</button>
-            <button class="btn secondary" id="cnpj-regen">↺</button>
-          </div>
-
-        </div>
-
       </div>
-
-      <!-- CNPJ ALFANUMERICO -->
-      <div class="row">
-
-        <div class="left">
-
-          <button class="small-btn" id="btn-gerar-cnpj-alpha">
-            CNPJ ALFA
-          </button>
-
-          <div class="checkbox">
-            <input type="checkbox" id="pontuar-cnpj-alpha" checked>
-            <label>Pontuação</label>
-          </div>
-
-        </div>
-
-        <div class="right">
-
-          <input
-            id="cnpj-alpha-input"
-            class="display"
-            type="text"
-            disabled
-          >
-
-          <div class="controls">
-            <button class="btn" id="cnpj-alpha-copy">COPIAR</button>
-            <button class="btn secondary" id="cnpj-alpha-regen">↺</button>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- CPF -->
-      <div class="row">
-
-        <div class="left">
-
-          <button class="small-btn" id="btn-gerar-cpf">
-            GERAR CPF
-          </button>
-
-          <div class="checkbox">
-            <input type="checkbox" id="pontuar-cpf" checked>
-            <label>Pontuação</label>
-          </div>
-
-        </div>
-
-        <div class="right">
-
-          <input
-            id="cpf-input"
-            class="display"
-            type="text"
-            disabled
-          >
-
-          <div class="controls">
-            <button class="btn" id="cpf-copy">COPIAR</button>
-            <button class="btn secondary" id="cpf-regen">↺</button>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- VALIDAR CPF -->
-      <div class="row">
-
-        <div class="left">
-          <button class="small-btn" onclick="verificarCPF()">
-            VALIDAR CPF
-          </button>
-        </div>
-
-        <div class="right">
-          <input
-            type="text"
-            id="cpf"
-            class="display"
-            maxlength="14"
-            placeholder="Digite o CPF"
-          >
-        </div>
-
-      </div>
-
-      <div id="resultado"></div>
-
     </div>
+
+    <!-- CNPJ -->
+    <div class="row">
+      <div class="left">
+        <button class="small-btn" id="btn-gerar-cnpj">Gerar CNPJ</button>
+        <div class="checkbox">
+          <input type="checkbox" id="pontuar-cnpj" checked>
+          <label for="pontuar-cnpj">Pontuação</label>
+        </div>
+      </div>
+      <div class="right">
+        <input id="cnpj-input" class="display" type="text" readonly placeholder="CNPJ gerado" aria-label="CNPJ gerado">
+        <div class="controls">
+          <button class="btn" id="cnpj-copy">Copiar</button>
+          <button class="btn secondary" id="cnpj-regen" title="Gerar outro" aria-label="Gerar outro CNPJ">↺</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CNPJ ALFANUMERICO -->
+    <div class="row">
+      <div class="left">
+        <button class="small-btn" id="btn-gerar-cnpj-alpha">Gerar CNPJ alfa</button>
+        <div class="checkbox">
+          <input type="checkbox" id="pontuar-cnpj-alpha" checked>
+          <label for="pontuar-cnpj-alpha">Pontuação</label>
+        </div>
+      </div>
+      <div class="right">
+        <input id="cnpj-alpha-input" class="display" type="text" readonly placeholder="CNPJ alfanumérico gerado" aria-label="CNPJ alfanumérico gerado">
+        <div class="controls">
+          <button class="btn" id="cnpj-alpha-copy">Copiar</button>
+          <button class="btn secondary" id="cnpj-alpha-regen" title="Gerar outro" aria-label="Gerar outro CNPJ alfanumérico">↺</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CPF -->
+    <div class="row">
+      <div class="left">
+        <button class="small-btn" id="btn-gerar-cpf">Gerar CPF</button>
+        <div class="checkbox">
+          <input type="checkbox" id="pontuar-cpf" checked>
+          <label for="pontuar-cpf">Pontuação</label>
+        </div>
+      </div>
+      <div class="right">
+        <input id="cpf-input" class="display" type="text" readonly placeholder="CPF gerado" aria-label="CPF gerado">
+        <div class="controls">
+          <button class="btn" id="cpf-copy">Copiar</button>
+          <button class="btn secondary" id="cpf-regen" title="Gerar outro" aria-label="Gerar outro CPF">↺</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALIDAR CPF -->
+    <div class="row">
+      <div class="left">
+        <button class="small-btn" onclick="verificarCPF()">Validar CPF</button>
+      </div>
+      <div class="right">
+        <input type="text" id="cpf" class="display" maxlength="14" inputmode="numeric" placeholder="Digite o CPF" aria-label="CPF para validar">
+      </div>
+    </div>
+
+    <div id="resultado" role="status" aria-live="polite"></div>
 
   </div>
 
@@ -316,47 +256,43 @@
   // =========================
 
   async function gerarNome() {
-
     const res = await fetch('https://randomuser.me/api/?nat=br');
     const data = await res.json();
-
     return `${data.results[0].name.first} ${data.results[0].name.last}`;
   }
 
   async function atualizarNome(){
-
     const input = document.getElementById('nome-input');
-
     input.value = 'Gerando...';
-
     try{
       input.value = await gerarNome();
     }catch{
-      input.value = 'Erro';
+      input.value = 'Erro ao gerar nome';
     }
   }
 
-  document.getElementById('btn-gerar-nome')
-    .addEventListener('click', atualizarNome);
-
-  document.getElementById('nome-regen')
-    .addEventListener('click', atualizarNome);
+  document.getElementById('btn-gerar-nome').addEventListener('click', atualizarNome);
+  document.getElementById('nome-regen').addEventListener('click', atualizarNome);
 
   // =========================
   // COPIAR
   // =========================
 
-  function copyToClipboard(text, el){
-
-    navigator.clipboard.writeText(text);
+  async function copyToClipboard(text, el){
+    try{
+      await navigator.clipboard.writeText(text);
+    }catch{
+      const tmp = document.createElement('textarea');
+      tmp.value = text;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      tmp.remove();
+    }
 
     const original = el.textContent;
-
-    el.textContent = 'COPIADO!';
-
-    setTimeout(()=>{
-      el.textContent = original;
-    },1000);
+    el.textContent = 'Copiado!';
+    setTimeout(()=>{ el.textContent = original; }, 1000);
   }
 
   // =========================
@@ -365,29 +301,16 @@
 
   function gerarCNPJ(pontuar){
 
-    const d = Array.from({length:8},
-      ()=>Math.floor(Math.random()*10));
+    const d = Array.from({length:8}, ()=>Math.floor(Math.random()*10));
 
     const calcDV = (base,pesos)=>{
-
-      let soma = base.reduce(
-        (acc,n,i)=>acc+n*pesos[i],0
-      );
-
+      let soma = base.reduce((acc,n,i)=>acc+n*pesos[i],0);
       let resto = soma % 11;
-
       return resto < 2 ? 0 : 11-resto;
     };
 
-    const v0 = calcDV(
-      [...d,0,0,0,1],
-      [5,4,3,2,9,8,7,6,5,4,3,2]
-    );
-
-    const v1 = calcDV(
-      [...d,0,0,0,1,v0],
-      [6,5,4,3,2,9,8,7,6,5,4,3,2]
-    );
+    const v0 = calcDV([...d,0,0,0,1], [5,4,3,2,9,8,7,6,5,4,3,2]);
+    const v1 = calcDV([...d,0,0,0,1,v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
 
     const cnpj = [...d,0,0,0,1,v0,v1];
 
@@ -408,9 +331,7 @@
     const pesos2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
 
     function randomChar(){
-      return chars[
-        Math.floor(Math.random()*chars.length)
-      ];
+      return chars[Math.floor(Math.random()*chars.length)];
     }
 
     function valorChar(c){
@@ -418,20 +339,15 @@
     }
 
     function calcularDV(base,pesos){
-
       let soma = 0;
-
       for(let i=0;i<pesos.length;i++){
         soma += valorChar(base[i]) * pesos[i];
       }
-
       const resto = soma % 11;
-
       return resto < 2 ? 0 : 11-resto;
     }
 
     let base = '';
-
     for(let i=0;i<12;i++){
       base += randomChar();
     }
@@ -452,19 +368,11 @@
 
   function gerarCPF(pontuar){
 
-    const base = Array.from(
-      {length:9},
-      ()=>Math.floor(Math.random()*10)
-    );
+    const base = Array.from({length:9}, ()=>Math.floor(Math.random()*10));
 
     const calcDV = (nums,peso)=>{
-
-      let soma = nums.reduce(
-        (acc,n,i)=>acc+n*(peso-i),0
-      );
-
+      let soma = nums.reduce((acc,n,i)=>acc+n*(peso-i),0);
       let resto = soma % 11;
-
       return resto < 2 ? 0 : 11-resto;
     };
 
@@ -479,78 +387,30 @@
   }
 
   // =========================
-  // EVENTOS
+  // EVENTOS (gerar, gerar outro, copiar)
   // =========================
 
-  const cnpjInput = document.getElementById('cnpj-input');
-  const cpfInput = document.getElementById('cpf-input');
-  const cnpjAlphaInput = document.getElementById('cnpj-alpha-input');
+  function ligarGerador(prefixo, idInput, idCheck, fn){
+    const input = document.getElementById(idInput);
+    const gerar = ()=>{ input.value = fn(document.getElementById(idCheck).checked); };
 
-  // CNPJ
-
-  document.getElementById('btn-gerar-cnpj')
-    .addEventListener('click',()=>{
-      cnpjInput.value = gerarCNPJ(
-        document.getElementById('pontuar-cnpj').checked
-      );
+    document.getElementById(`btn-gerar-${prefixo}`).addEventListener('click', gerar);
+    document.getElementById(`${prefixo}-regen`).addEventListener('click', gerar);
+    document.getElementById(`${prefixo}-copy`).addEventListener('click', (e)=>{
+      if(!input.value) return;
+      copyToClipboard(input.value, e.currentTarget);
     });
+  }
 
-  document.getElementById('cnpj-regen')
-    .addEventListener('click',()=>{
-      cnpjInput.value = gerarCNPJ(
-        document.getElementById('pontuar-cnpj').checked
-      );
-    });
+  ligarGerador('cnpj', 'cnpj-input', 'pontuar-cnpj', gerarCNPJ);
+  ligarGerador('cnpj-alpha', 'cnpj-alpha-input', 'pontuar-cnpj-alpha', gerarCNPJAlfanumerico);
+  ligarGerador('cpf', 'cpf-input', 'pontuar-cpf', gerarCPF);
 
-  document.getElementById('cnpj-copy')
-    .addEventListener('click',(e)=>{
-      if(!cnpjInput.value) return;
-      copyToClipboard(cnpjInput.value,e.currentTarget);
-    });
-
-  // CNPJ ALFA
-
-  document.getElementById('btn-gerar-cnpj-alpha')
-    .addEventListener('click',()=>{
-      cnpjAlphaInput.value = gerarCNPJAlfanumerico(
-        document.getElementById('pontuar-cnpj-alpha').checked
-      );
-    });
-
-  document.getElementById('cnpj-alpha-regen')
-    .addEventListener('click',()=>{
-      cnpjAlphaInput.value = gerarCNPJAlfanumerico(
-        document.getElementById('pontuar-cnpj-alpha').checked
-      );
-    });
-
-  document.getElementById('cnpj-alpha-copy')
-    .addEventListener('click',(e)=>{
-      if(!cnpjAlphaInput.value) return;
-      copyToClipboard(cnpjAlphaInput.value,e.currentTarget);
-    });
-
-  // CPF
-
-  document.getElementById('btn-gerar-cpf')
-    .addEventListener('click',()=>{
-      cpfInput.value = gerarCPF(
-        document.getElementById('pontuar-cpf').checked
-      );
-    });
-
-  document.getElementById('cpf-regen')
-    .addEventListener('click',()=>{
-      cpfInput.value = gerarCPF(
-        document.getElementById('pontuar-cpf').checked
-      );
-    });
-
-  document.getElementById('cpf-copy')
-    .addEventListener('click',(e)=>{
-      if(!cpfInput.value) return;
-      copyToClipboard(cpfInput.value,e.currentTarget);
-    });
+  document.getElementById('nome-copy').addEventListener('click', (e)=>{
+    const v = document.getElementById('nome-input').value;
+    if(!v || v === 'Gerando...' || v.startsWith('Erro')) return;
+    copyToClipboard(v, e.currentTarget);
+  });
 
   // =========================
   // VALIDAR CPF
@@ -560,29 +420,23 @@
 
     cpf = cpf.replace(/\D/g,'');
 
-    if(cpf.length !== 11 ||
-      /^(\d)\1+$/.test(cpf)) return false;
+    if(cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
 
     let soma = 0;
-
     for(let i=0;i<9;i++){
       soma += parseInt(cpf[i]) * (10-i);
     }
 
     let resto = (soma*10)%11;
-
     if(resto===10) resto=0;
-
     if(resto !== parseInt(cpf[9])) return false;
 
     soma = 0;
-
     for(let i=0;i<10;i++){
       soma += parseInt(cpf[i]) * (11-i);
     }
 
     resto = (soma*10)%11;
-
     if(resto===10) resto=0;
 
     return resto === parseInt(cpf[10]);
@@ -590,23 +444,36 @@
 
   function verificarCPF(){
 
-    const cpf =
-      document.getElementById('cpf').value;
+    const cpf = document.getElementById('cpf').value;
+    const resultado = document.getElementById('resultado');
 
-    const resultado =
-      document.getElementById('resultado');
+    if(!cpf.trim()){
+      resultado.textContent = 'Digite um CPF para validar';
+      resultado.className = 'invalido';
+      return;
+    }
 
     if(validarCPF(cpf)){
-
       resultado.textContent = '✅ CPF válido';
       resultado.className = 'valido';
-
     }else{
-
       resultado.textContent = '❌ CPF inválido';
       resultado.className = 'invalido';
     }
   }
+
+  // Enter valida; máscara 000.000.000-00 enquanto digita
+  document.getElementById('cpf').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') verificarCPF();
+  });
+
+  document.getElementById('cpf').addEventListener('input', (e)=>{
+    const n = e.target.value.replace(/\D/g,'').slice(0,11);
+    e.target.value = n
+      .replace(/^(\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/\.(\d{3})(\d)/, '.$1-$2');
+  });
 
 </script>
 
