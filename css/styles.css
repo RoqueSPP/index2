@@ -1,114 +1,241 @@
+/* ==========================================================
+   Página de Testes — tema dark
+   Salve em: css/styles.css
+   ========================================================== */
 
-  <style>
-    :root {
-      --bg: #f4f6fa;
-      --card: #fff;
-      --accent: #0078ff;
-      --text: #333;
-      --radius: 10px;
-    }
+:root {
+  --bg: #0f1420;
+  --surface: #171e2e;
+  --surface-2: #1f2840;
+  --border: #2e3a57;
+  --text: #e6eaf2;
+  --text-muted: #9aa6bf;
+  --accent: #6cb6ff;
+  --accent-strong: #8fc9ff;
+  --on-accent: #0b1220;
+  --danger: #ff6b6b;
+  --radius: 10px;
 
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background-color: var(--bg);
-      margin: 0;
-      padding: 0;
-      color: var(--text);
-    }
+  color-scheme: dark;
+}
 
-    header {
-      background: var(--accent);
-      color: white;
-      text-align: center;
-      padding: 20px 0;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-    h1 {
-    text-align: center;
-    background-color: coral;
-      font-size: 1.8rem;
-      letter-spacing: 1px;
-    }
+html {
+  background: var(--bg);
+}
 
-    form {
-      background: var(--card);
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
+body {
+  margin: 0;
+  padding: 2rem 1rem 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
 
-    fieldset {
-      border: 2px solid var(--accent);
-      border-radius: var(--radius);
-      margin-bottom: 25px;
-      padding: 20px;
-    }
+h1 {
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto 1.5rem;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
 
-    legend {
-      font-weight: bold;
-      color: var(--accent);
-      padding: 0 8px;
-    }
+/* ---------- Formulário ---------- */
 
-    label {
-      display: block;
-      margin: 12px 0 6px;
-      font-weight: 600;
-    }
+form {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+}
 
-    input,
-    select {
-      width: 100%;
-      padding: 10px;
-      border-radius: var(--radius);
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      box-sizing: border-box;
-      transition: border-color 0.3s;
-    }
+fieldset {
+  margin: 0 0 1.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
 
-    input:focus,
-    select:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
+legend {
+  padding: 0 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent);
+}
 
-    input[type="checkbox"] {
-      width: auto;
-      margin-top: 10px;
-    }
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.25rem;
+}
 
-    #btnButton {
-      background-color: var(--accent);
-      color: black;
-      border: none;
-      padding: 14px 25px;
-      border-radius: var(--radius);
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: 0.3s;
-      width: 100%;
-    }
+label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
 
-    #btnButton:hover {
-      background-color: #005fcc;
-    }
+/* Campos do endereço (fora do .two-col) */
+fieldset > form > label,
+fieldset > label {
+  margin-top: 1rem;
+}
 
-    @media (min-width: 700px) {
-      .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-      }
-    }
+fieldset > form > label:first-child,
+fieldset > label:first-child {
+  margin-top: 0;
+}
 
-    footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 0.9rem;
-      color: black;
-    }
-  </style>
+/* ---------- Campos ---------- */
+
+input,
+select {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input::placeholder {
+  color: #6f7b96;
+}
+
+input:hover:not(:disabled),
+select:hover {
+  border-color: #44547a;
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108, 182, 255, 0.3);
+}
+
+input:disabled {
+  background: #141a29;
+  color: var(--text-muted);
+  border-style: dashed;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+select option {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* Remove as setas dos campos numéricos (opcional) */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ícone do calendário legível no tema escuro */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  cursor: pointer;
+}
+
+/* Preenchimento automático do navegador */
+input:-webkit-autofill {
+  -webkit-text-fill-color: var(--text);
+  box-shadow: 0 0 0 1000px var(--surface-2) inset;
+  caret-color: var(--text);
+}
+
+/* ---------- Mensagem de erro ---------- */
+
+.error {
+  min-height: 1.4em;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--danger);
+}
+
+/* ---------- Botão ---------- */
+
+button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0 1.5rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+button:hover {
+  background: var(--accent-strong);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* ---------- Rodapé ---------- */
+
+footer {
+  margin-top: auto;
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 640px) {
+  body {
+    padding: 1.25rem 0.75rem 0;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  fieldset {
+    padding: 1rem;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
