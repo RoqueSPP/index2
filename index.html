@@ -66,7 +66,7 @@
         </div>
         <div>
           <label for="rg">RG</label>
-          <input type="number" id="rg" placeholder="Insert your RG" required>
+          <input type="text" id="rg" placeholder="00.000.000-0" maxlength="12" required>
         </div>
         <div>
           <label for="phone">Telefone</label>
@@ -238,6 +238,25 @@
       cpfMsg.textContent = "CPF inválido.";
       cpfInput.style.border = "2px solid red";
     }
+  });
+
+  // ---------- Máscara do RG: 00.000.000-0 ----------
+  function mascararRG(valor) {
+    const bruto = valor.toUpperCase();
+    const digitos = bruto.replace(/\D/g, "").slice(0, 9);
+    // O dígito verificador pode ser "X" (só na 9ª posição)
+    let v = digitos;
+    if (digitos.length === 8 && /X$/.test(bruto)) v = digitos + "X";
+
+    return v
+      .replace(/^(.{2})(.)/, "$1.$2")
+      .replace(/^(.{2})\.(.{3})(.)/, "$1.$2.$3")
+      .replace(/^(.{2})\.(.{3})\.(.{3})(.)/, "$1.$2.$3-$4");
+  }
+
+  const rgInput = document.querySelector("#rg");
+  rgInput.addEventListener("input", () => {
+    rgInput.value = mascararRG(rgInput.value);
   });
 
   // ---------- Validação do formulário ----------
