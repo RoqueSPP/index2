@@ -1,308 +1,995 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-
+<!doctype html>
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
-    <meta name="description" content="FORMULÁRIOS COM HTML, CSS & JS!">
-    <meta name="keywords" content="HTML, CSS, FORMULÁRIOS, JavaScript, Playwright, Cypress, Robot, Codeceptjs, Appium, Selenium, Pactum, Postman">
-    <title>Pagina de testes</title>
-       <h1>Página de Testes</h1>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0e1118">
+  <title>Gerador e Validador</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0e1118;
+      --card: #151a24;
+      --card-hover: #181e2a;
+      --field: #0e1118;
+      --line: #252d3d;
+      --line-strong: #37425a;
+      --text: #e7ebf3;
+      --muted: #8e99ad;
+      --faint: #586479;
+      --accent: #8b9bff;
+      --accent-hover: #a3b0ff;
+      --accent-ink: #10142b;
+      --accent-soft: rgba(139, 155, 255, .12);
+      --ok: #5fd3a0;
+      --bad: #ff7a85;
+      --warn: #f5c26b;
+      --font: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+      --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 20px 64px;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+    header h1 { font-size: 1.8rem; letter-spacing: -0.02em; line-height: 1.2; }
+    header p { color: var(--muted); margin-top: 6px; }
+
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 20px;
+      align-items: start;
+    }
+    .main { display: grid; gap: 20px; min-width: 0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+      transition: border-color .15s, background .15s;
+    }
+    .card:hover { border-color: var(--line-strong); }
+    .card.flash { animation: flash .6s ease; }
+    @keyframes flash {
+      0%   { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+      100% { border-color: var(--line); box-shadow: 0 0 0 0 transparent; }
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-title { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .icon {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      border-radius: 9px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      flex-shrink: 0;
+    }
+    .card-sub { color: var(--muted); font-size: .85rem; font-weight: 400; }
+
+    kbd {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--muted);
+      border: 1px solid var(--line-strong);
+      border-bottom-width: 2px;
+      border-radius: 6px;
+      padding: 1px 6px;
+      background: var(--field);
+    }
+
+    .row { display: flex; gap: 8px; align-items: center; min-width: 0; }
+
+    /* ---------- Controles ---------- */
+    button { font: inherit; cursor: pointer; transition: background .15s, border-color .15s, color .15s, transform .1s; }
+    button:active { transform: scale(.98); }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .small-btn {
+      height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .small-btn:hover { background: var(--accent-hover); }
+    .small-btn.full { width: 100%; }
+
+    .display {
+      flex: 1;
+      min-width: 0;
+      height: 40px;
+      padding: 0 14px;
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      letter-spacing: .02em;
+      color: var(--text);
+      background: var(--field);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      text-align: left;
+      transition: border-color .15s;
+    }
+    .display::placeholder { color: var(--faint); font-family: var(--font); letter-spacing: 0; }
+    .display:hover { border-color: var(--line-strong); }
+    .display:focus { border-color: var(--accent); outline: none; }
+    .display[readonly] { cursor: pointer; }
+    .display.is-ok  { border-color: rgba(95, 211, 160, .6); }
+    .display.is-bad { border-color: rgba(255, 122, 133, .6); }
+
+    .btn {
+      height: 40px;
+      padding: 0 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #1d2534; }
+    .btn.secondary { width: 40px; padding: 0; color: var(--muted); font-size: 1.15rem; flex-shrink: 0; }
+    .btn.secondary:hover { color: var(--text); }
+    .btn.copied { color: var(--ok); border-color: rgba(95, 211, 160, .5); }
+    .btn.spin { animation: spin .4s ease; }
+    @keyframes spin { to { transform: rotate(-360deg); } }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Toggle de pontuação */
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .9rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .switch input { position: absolute; opacity: 0; pointer-events: none; }
+    .switch .track {
+      width: 34px; height: 20px;
+      border-radius: 999px;
+      background: var(--line);
+      border: 1px solid var(--line-strong);
+      position: relative;
+      transition: background .15s, border-color .15s;
+    }
+    .switch .track::after {
+      content: "";
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform .15s, background .15s;
+    }
+    .switch input:checked + .track { background: var(--accent-soft); border-color: var(--accent); }
+    .switch input:checked + .track::after { transform: translateX(14px); background: var(--accent); }
+    .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Seletor de quantidade */
+    .qty {
+      display: inline-flex;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .qty button {
+      height: 30px;
+      padding: 0 10px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 600;
+    }
+    .qty button + button { border-left: 1px solid var(--line); }
+    .qty button:hover { color: var(--text); background: #1d2534; }
+    .qty button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+
+    /* Lista de lote */
+    .batch {
+      display: none;
+      max-height: 180px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--field);
+    }
+    .batch.show { display: block; }
+    .batch li {
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      font-family: var(--mono);
+      font-size: .92rem;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+    }
+    .batch li:last-child { border-bottom: 0; }
+    .batch li:hover { background: var(--card-hover); }
+    .batch li span.hint { font-family: var(--font); font-size: .75rem; color: var(--faint); }
+    .batch ul { padding: 0; }
+    .batch-actions { display: none; justify-content: flex-end; }
+    .batch-actions.show { display: flex; }
+
+    /* ---------- Validador ---------- */
+    .validator .row { flex-wrap: nowrap; }
+    .detect {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      font-size: .78rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      color: var(--faint);
+      transition: all .15s;
+    }
+    .chip.on { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+    #resultado {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      text-align: center;
+      border: 1px dashed var(--line-strong);
+      color: var(--faint);
+      transition: all .15s;
+    }
+    .valido   { color: var(--ok)  !important; background: rgba(95, 211, 160, .1);  border: 1px solid rgba(95, 211, 160, .35)  !important; }
+    .invalido { color: var(--bad) !important; background: rgba(255, 122, 133, .1); border: 1px solid rgba(255, 122, 133, .35) !important; }
+    .parcial  { color: var(--warn) !important; background: rgba(245, 194, 107, .08); border: 1px solid rgba(245, 194, 107, .3) !important; }
+
+    .progress {
+      height: 4px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress > div {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width .2s, background .2s;
+    }
+
+    /* ---------- Histórico ---------- */
+    aside.card { position: sticky; top: 20px; max-height: calc(100vh - 40px); grid-template-rows: auto auto 1fr; }
+    .history { overflow: auto; min-height: 120px; display: grid; gap: 6px; align-content: start; padding: 0; }
+    .history li {
+      list-style: none;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2px 10px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--field);
+      cursor: pointer;
+      animation: slideIn .2s ease;
+    }
+    .history li:hover { border-color: var(--line-strong); }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } }
+    .tag {
+      grid-row: span 2;
+      font-size: .68rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 6px;
+      padding: 3px 6px;
+      text-align: center;
+      min-width: 46px;
+    }
+    .history .val { font-family: var(--mono); font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history .time { font-size: .72rem; color: var(--faint); }
+    .empty { color: var(--faint); font-size: .9rem; text-align: center; padding: 24px 8px; }
+
+    .filter { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter button {
+      font-size: .78rem; font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--muted);
+    }
+    .filter button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+    .link-btn {
+      border: 0; background: none; color: var(--muted);
+      font-size: .85rem; font-weight: 600; padding: 4px 6px; border-radius: 6px;
+    }
+    .link-btn:hover { color: var(--bad); }
+
+    /* ---------- Toast ---------- */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--card);
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: .92rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      transition: opacity .2s, transform .2s;
+      z-index: 10;
+      max-width: calc(100vw - 32px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast b { color: var(--ok); font-family: var(--mono); font-weight: 600; }
+
+    .shortcuts { color: var(--faint); font-size: .82rem; display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+
+    /* ---------- Responsivo ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; }
+      aside.card { position: static; max-height: none; }
+      .history { max-height: 320px; }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 28px 16px 48px; }
+      header h1 { font-size: 1.5rem; }
+      .header-actions, .header-actions .small-btn { width: 100%; }
+      .card { padding: 18px; }
+      kbd, .shortcuts { display: none; }
+    }
+
+    @media (max-width: 400px) {
+      .gen .row { flex-wrap: wrap; }
+      .gen .display { flex-basis: 100%; }
+      .gen .row .btn:not(.secondary) { flex: 1; }
+      .validator .row { flex-wrap: wrap; }
+      .validator .small-btn { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
 </head>
 
 <body>
 
-  <form>
-    <fieldset>
-      <legend>Basic Information</legend>
-      <div class="two-col">
-        <div>
-          <label for="firstname">Primeiro Nome</label>
-          <input type="text" id="firstname" placeholder="Insert your full name" required>
+<div class="container">
+
+  <header>
+    <div>
+      <h1>Gerador e Validador</h1>
+      <p>CPF, CNPJ, CNPJ alfanumérico e nomes para testes.</p>
+    </div>
+    <div class="header-actions">
+      <button class="small-btn" id="gerar-tudo">Gerar tudo <kbd>G</kbd></button>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <div class="main">
+
+      <div class="grid" id="geradores"></div>
+
+      <!-- VALIDADOR -->
+      <section class="card validator">
+        <div class="card-head">
+          <div class="card-title">
+            <span class="icon">✓</span>
+            <div>
+              Validar documento
+              <div class="card-sub">Detecta CPF, CNPJ ou CNPJ alfanumérico automaticamente</div>
+            </div>
+          </div>
+          <kbd>V</kbd>
         </div>
-        <div>
-          <label for="lastname">Ultimo Nome</label>
-          <input type="text" id="lastname" placeholder="Insert your last name" required>
+
+        <div class="row">
+          <input type="text" id="doc" class="display" maxlength="18" autocomplete="off" spellcheck="false"
+                 placeholder="Digite ou cole um CPF / CNPJ" aria-label="Documento para validar">
+          <button class="btn secondary" id="doc-clear" title="Limpar" aria-label="Limpar campo">✕</button>
+          <button class="small-btn" id="doc-validar">Validar</button>
         </div>
-        <div>
-          <label for="password">Senha</label>
-          <input type="password" id="password" placeholder="Insert your password" required>
+
+        <div class="options">
+          <div class="detect" aria-hidden="true">
+            <span class="chip" data-tipo="cpf">CPF</span>
+            <span class="chip" data-tipo="cnpj">CNPJ</span>
+            <span class="chip" data-tipo="alfa">CNPJ alfa</span>
+          </div>
+          <span class="card-sub" id="doc-count">0 / 11–14</span>
         </div>
-        <div>
-          <label for="age">Idade</label>
-          <input type="number" id="age" placeholder="Insert your age" required>
+
+        <div class="progress"><div id="doc-progress"></div></div>
+
+        <div id="resultado" role="status" aria-live="polite">Aguardando documento…</div>
+      </section>
+
+    </div>
+
+    <!-- HISTÓRICO -->
+    <aside class="card" aria-label="Histórico">
+      <div class="card-head">
+        <div class="card-title">
+          <span class="icon">≡</span>
+          <div>
+            Histórico
+            <div class="card-sub" id="hist-count">0 itens · clique para copiar</div>
+          </div>
         </div>
+        <button class="link-btn" id="hist-clear">Limpar</button>
+      </div>
+
+      <div class="filter" id="hist-filter">
+        <button aria-pressed="true" data-f="all">Todos</button>
+        <button aria-pressed="false" data-f="NOME">Nome</button>
+        <button aria-pressed="false" data-f="CNPJ">CNPJ</button>
+        <button aria-pressed="false" data-f="ALFA">Alfa</button>
+        <button aria-pressed="false" data-f="CPF">CPF</button>
+      </div>
+
+      <ul class="history" id="history"></ul>
+    </aside>
+
+  </div>
+
+  <div class="shortcuts">
+    <span><kbd>N</kbd> nome</span>
+    <span><kbd>J</kbd> CNPJ</span>
+    <span><kbd>A</kbd> CNPJ alfa</span>
+    <span><kbd>C</kbd> CPF</span>
+    <span><kbd>G</kbd> gerar tudo</span>
+    <span><kbd>V</kbd> validar</span>
+    <span><kbd>Esc</kbd> sair do campo</span>
+  </div>
+
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<template id="tpl-gen">
+  <section class="card gen">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="icon"></span>
         <div>
-          <label for="birth">Data de Nascimento</label>
-          <input type="date" id="birth" required>
-        </div>
-        <div>
-          <label for="height">Altura</label>
-          <input type="text" id="height" placeholder="Insert your height" required>
-        </div>
-        <div>
-          <label for="peso">Peso</label>
-          <input type="text" id="peso" placeholder="Insert your weight" required>
-        </div>
-        <div>
-          <label for="blood">Tipo Sanguineo</label>
-          <input type="text" id="blood" placeholder="Insert your blood type" required>
-        </div>
-        <div>
-          <label for="skin">Cor de Pele</label>
-          <input type="text" id="skin" placeholder="Insert your skin color" required>
+          <span class="t-title"></span>
+          <div class="card-sub t-sub"></div>
         </div>
       </div>
-    </fieldset>
+      <kbd class="t-key"></kbd>
+    </div>
 
-    <fieldset>
-      <legend>Informações Pessoais</legend>
-      <div class="two-col">
-        <div>
-          <label for="cpf">CPF</label>
-          <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" inputmode="numeric" required>
-          <div id="cpfMsg" class="error"></div>
-        </div>
-        <div>
-          <label for="rg">RG</label>
-          <input type="text" id="rg" placeholder="00.000.000-0" maxlength="12" required>
-        </div>
-        <div>
-          <label for="phone">Telefone</label>
-          <input type="number" id="phone" placeholder="Insert your phone" required>
-        </div>
-        <div>
-          <label for="mobile">Celular</label>
-          <input type="number" id="mobile" placeholder="Insert your mobile number" required>
-        </div>
-        <div>
-          <label for="email">E-mail</label>
-          <input type="email" id="email" placeholder="Insert your best email" required>
-        </div>
-        <div>
-          <label for="mather">Nome da Mãe</label>
-          <input type="text" id="mather" placeholder="Mother full name" required>
-        </div>
-        <div>
-          <label for="father">Nome do Pai</label>
-          <input type="text" id="father" placeholder="Father full name" required>
-        </div>
+    <div class="row">
+      <input class="display" type="text" readonly title="Clique para copiar">
+      <button class="btn t-copy">Copiar</button>
+      <button class="btn secondary t-regen" title="Gerar outro">↺</button>
+    </div>
+
+    <div class="options">
+      <label class="switch t-switch">
+        <input type="checkbox" checked>
+        <span class="track"></span>
+        Pontuação
+      </label>
+      <div class="qty" role="group" aria-label="Quantidade">
+        <button aria-pressed="true" data-q="1">1</button>
+        <button aria-pressed="false" data-q="5">5</button>
+        <button aria-pressed="false" data-q="10">10</button>
       </div>
-    </fieldset>
+    </div>
 
-    <fieldset>
-      <legend>Outras Informações</legend>
-      <div class="two-col">
-        <div>
-          <label for="select1">Sexo</label>
-          <select id="select1">
-            <option>--Select--</option>
-            <option value="male">Masculino</option>
-            <option value="female">Feminino</option>
-            <option value="noreply">Prefiro não Responder</option>
-          </select>
-        </div>
-        <div>
-          <label for="select2">Signo</label>
-          <select id="select2">
-            <option>--Select--</option>
-            <option>Aries</option>
-            <option>Touro</option>
-            <option>Gêmeos</option>
-            <option>Cancer</option>
-            <option>Leão</option>
-            <option>Virgem</option>
-            <option>Libra</option>
-            <option>Escorpião</option>
-            <option>Sargitário</option>
-            <option>Capricornio</option>
-            <option>Aquario</option>
-            <option>Peixes</option>
-          </select>
-        </div>
-      </div>
-    </fieldset>
+    <div class="batch"><ul></ul></div>
+    <div class="batch-actions"><button class="btn t-copy-all">Copiar todos</button></div>
 
-    <fieldset>
-      <form>
-      <label for="cep">CEP</label>
-      <input type="text" id="cep" name="cep" maxlength="9" placeholder="00000-000" autocomplete="postal-code">
+    <button class="small-btn full t-gen"></button>
+  </section>
+</template>
 
-      <label for="logradouro">Endereço</label>
-      <input type="text" disabled id="logradouro" name="logradouro" placeholder="Rua, Avenida, etc.">
-          
-      <label for="Numero">Número</label>
-      <input type="text" id="numero" name="numer" placeholder="numero.">
+<script>
 
-      <label for="bairro">Bairro</label>
-      <input type="text" disabled id="bairro" name="bairro">
+  // =========================
+  // UTIL
+  // =========================
 
-      <label for="cidade">Cidade</label>
-      <input type="text" disabled id="cidade" name="cidade">
+  const $ = (s, el = document) => el.querySelector(s);
+  const rnd = (n) => Math.floor(Math.random() * n);
 
-      <label for="uf">Estado (UF)</label>
-      <input type="text" disabled id="uf" name="uf" maxlength="2">
+  let toastTimer;
+  function toast(html){
+    const t = $('#toast');
+    t.innerHTML = html;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+  }
 
-      <div id="mensagem" class="error"></div>
-    </form>
- <button type="button" id="btnValidate" onclick="validarFormulario()">
-  Validar Preenchimento
-</button>
-  </form>
-  </fieldset>
-  <script>
-    const cep = document.querySelector("#cep");
-    const logradouro = document.querySelector("#logradouro");
-    const bairro = document.querySelector("#bairro");
-    const cidade = document.querySelector("#cidade");
-    const uf = document.querySelector("#uf");
-    const mensagem = document.querySelector("#mensagem");
+  async function copyToClipboard(text, el){
+    try{
+      await navigator.clipboard.writeText(text);
+    }catch{
+      const tmp = document.createElement('textarea');
+      tmp.value = text;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      tmp.remove();
+    }
 
-    // Máscara do CEP: 00000-000
-    cep.addEventListener("input", () => {
-      let v = cep.value.replace(/\D/g, "").slice(0, 8);
-      if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5);
-      cep.value = v;
+    const resumo = text.includes('\n') ? `${text.split('\n').length} itens` : text;
+    toast(`Copiado: <b></b>`);
+    $('#toast b').textContent = resumo;
 
-      // Quando o usuário termina de digitar (8 dígitos), busca automaticamente
-      if (v.length === 9) {
-        buscarCEP(v.replace("-", ""));
-      }
+    if(el && el.tagName === 'BUTTON' && !el.classList.contains('secondary')){
+      const original = el.dataset.label || el.textContent;
+      el.dataset.label = original;
+      el.textContent = 'Copiado!';
+      el.classList.add('copied');
+      setTimeout(() => { el.textContent = original; el.classList.remove('copied'); }, 1000);
+    }
+  }
+
+  // =========================
+  // NOME
+  // =========================
+
+  const NOMES = ['Ana','Bruno','Carla','Diego','Eduarda','Felipe','Gabriela','Henrique','Isabela','João','Larissa','Lucas','Mariana','Mateus','Natália','Otávio','Paula','Rafael','Sofia','Thiago','Vitória','Gustavo','Beatriz','Leonardo'];
+  const SOBRENOMES = ['Silva','Santos','Oliveira','Souza','Rodrigues','Ferreira','Alves','Pereira','Lima','Gomes','Costa','Ribeiro','Martins','Carvalho','Almeida','Lopes','Araújo','Barbosa','Rocha','Dias'];
+
+  function nomeLocal(){
+    return `${NOMES[rnd(NOMES.length)]} ${SOBRENOMES[rnd(SOBRENOMES.length)]}`;
+  }
+
+  async function gerarNomes(qtd){
+    try{
+      const res = await fetch(`https://randomuser.me/api/?nat=br&inc=name&results=${qtd}`);
+      const data = await res.json();
+      return data.results.map(r => `${r.name.first} ${r.name.last}`);
+    }catch{
+      // Sem conexão: usa lista local
+      return Array.from({length: qtd}, nomeLocal);
+    }
+  }
+
+  // =========================
+  // CNPJ
+  // =========================
+
+  function gerarCNPJ(pontuar){
+
+    const d = Array.from({length:8}, () => rnd(10));
+
+    const calcDV = (base,pesos) => {
+      const soma = base.reduce((acc,n,i) => acc + n*pesos[i], 0);
+      const resto = soma % 11;
+      return resto < 2 ? 0 : 11 - resto;
+    };
+
+    const v0 = calcDV([...d,0,0,0,1], [5,4,3,2,9,8,7,6,5,4,3,2]);
+    const v1 = calcDV([...d,0,0,0,1,v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
+
+    const cnpj = [...d,0,0,0,1,v0,v1].join('');
+    return pontuar ? formatarCNPJ(cnpj) : cnpj;
+  }
+
+  // =========================
+  // CNPJ ALFANUMERICO
+  // =========================
+
+  const ALFA_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const PESOS1 = [5,4,3,2,9,8,7,6,5,4,3,2];
+  const PESOS2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+
+  const valorChar = (c) => c.charCodeAt(0) - 48;
+
+  function dvAlfa(base, pesos){
+    let soma = 0;
+    for(let i = 0; i < pesos.length; i++) soma += valorChar(base[i]) * pesos[i];
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  }
+
+  function gerarCNPJAlfanumerico(pontuar){
+    let base = '';
+    for(let i = 0; i < 12; i++) base += ALFA_CHARS[rnd(ALFA_CHARS.length)];
+
+    const dv1 = dvAlfa(base, PESOS1);
+    const dv2 = dvAlfa(base + dv1, PESOS2);
+    const cnpj = base + dv1 + dv2;
+
+    return pontuar ? formatarCNPJ(cnpj) : cnpj;
+  }
+
+  const formatarCNPJ = (c) => `${c.slice(0,2)}.${c.slice(2,5)}.${c.slice(5,8)}/${c.slice(8,12)}-${c.slice(12,14)}`;
+
+  // =========================
+  // CPF
+  // =========================
+
+  function gerarCPF(pontuar){
+
+    const base = Array.from({length:9}, () => rnd(10));
+
+    const calcDV = (nums,peso) => {
+      const soma = nums.reduce((acc,n,i) => acc + n*(peso-i), 0);
+      const resto = soma % 11;
+      return resto < 2 ? 0 : 11 - resto;
+    };
+
+    const d1 = calcDV(base,10);
+    const d2 = calcDV([...base,d1],11);
+
+    const cpf = [...base,d1,d2].join('');
+    return pontuar ? `${cpf.slice(0,3)}.${cpf.slice(3,6)}.${cpf.slice(6,9)}-${cpf.slice(9)}` : cpf;
+  }
+
+  // =========================
+  // HISTÓRICO
+  // =========================
+
+  const historico = [];
+  let filtro = 'all';
+
+  function addHistorico(tag, valores){
+    const hora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    valores.forEach(v => historico.unshift({tag, v, hora}));
+    historico.splice(50);
+    renderHistorico();
+  }
+
+  function renderHistorico(){
+    const ul = $('#history');
+    const itens = historico.filter(h => filtro === 'all' || h.tag === filtro);
+    $('#hist-count').textContent = `${historico.length} ${historico.length === 1 ? 'item' : 'itens'} · clique para copiar`;
+
+    if(!itens.length){
+      ul.innerHTML = '<div class="empty">Nada gerado ainda.</div>';
+      return;
+    }
+
+    ul.innerHTML = '';
+    itens.forEach(h => {
+      const li = document.createElement('li');
+      li.title = 'Clique para copiar';
+      li.innerHTML = `<span class="tag"></span><span class="val"></span><span class="time"></span>`;
+      $('.tag', li).textContent = h.tag;
+      $('.val', li).textContent = h.v;
+      $('.time', li).textContent = h.hora;
+      li.addEventListener('click', () => copyToClipboard(h.v));
+      ul.appendChild(li);
     });
+  }
 
-    function buscarCEP(cepNumerico) {
-      mensagem.textContent = "";
-      fetch(`https://viacep.com.br/ws/${cepNumerico}/json/`)
-        .then(resp => {
-          if (!resp.ok) throw new Error("Erro ao consultar o CEP");
-          return resp.json();
-        })
-        .then(data => {
-          if (data.erro) {
-            limparCampos();
-            mensagem.textContent = "CEP não encontrado.";
-          } else {
-            logradouro.value = data.logradouro || "";
-            bairro.value = data.bairro || "";
-            cidade.value = data.localidade || "";
-            uf.value = data.uf || "";
-          }
-        })
-        .catch(() => {
-          limparCampos();
-          mensagem.textContent = "Erro ao buscar o CEP.";
+  $('#hist-filter').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if(!b) return;
+    filtro = b.dataset.f;
+    $('#hist-filter').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    renderHistorico();
+  });
+
+  $('#hist-clear').addEventListener('click', () => {
+    historico.length = 0;
+    renderHistorico();
+  });
+
+  // =========================
+  // GERADORES (cards)
+  // =========================
+
+  const GERADORES = [
+    { id:'nome',  tag:'NOME', icon:'Aa', title:'Nome',             sub:'Nome e sobrenome brasileiros', key:'N', pontuacao:false, async:true, fn: gerarNomes },
+    { id:'cnpj',  tag:'CNPJ', icon:'#',  title:'CNPJ',             sub:'14 dígitos numéricos',          key:'J', pontuacao:true,  fn: gerarCNPJ },
+    { id:'alfa',  tag:'ALFA', icon:'A1', title:'CNPJ alfanumérico', sub:'Novo formato (IN RFB 2.229/24)', key:'A', pontuacao:true, fn: gerarCNPJAlfanumerico },
+    { id:'cpf',   tag:'CPF',  icon:'ID', title:'CPF',              sub:'11 dígitos com DV válido',     key:'C', pontuacao:true,  fn: gerarCPF },
+  ];
+
+  const acoes = {};
+
+  GERADORES.forEach(g => {
+    const node = $('#tpl-gen').content.cloneNode(true);
+    const card = $('.card', node);
+    const input = $('.display', node);
+    const check = $('.t-switch input', node);
+    const batch = $('.batch', node);
+    const batchActions = $('.batch-actions', node);
+    let qtd = 1;
+    let lote = [];
+
+    card.id = `card-${g.id}`;
+    $('.icon', node).textContent = g.icon;
+    $('.t-title', node).textContent = g.title;
+    $('.t-sub', node).textContent = g.sub;
+    $('.t-key', node).textContent = g.key;
+    $('.t-gen', node).textContent = `Gerar ${g.title}`;
+    input.placeholder = `${g.title} gerado`;
+    input.setAttribute('aria-label', `${g.title} gerado`);
+    $('.t-regen', node).setAttribute('aria-label', `Gerar outro ${g.title}`);
+    if(!g.pontuacao) $('.t-switch', node).style.visibility = 'hidden';
+
+    async function gerar(){
+      let valores;
+      if(g.async){
+        input.value = 'Gerando...';
+        valores = await g.fn(qtd);
+      }else{
+        valores = Array.from({length: qtd}, () => g.fn(check.checked));
+      }
+
+      lote = valores;
+      input.value = valores[0];
+      addHistorico(g.tag, valores);
+
+      // Lote
+      const ul = $('ul', batch);
+      ul.innerHTML = '';
+      if(qtd > 1){
+        valores.forEach(v => {
+          const li = document.createElement('li');
+          li.innerHTML = '<span></span><span class="hint">copiar</span>';
+          li.firstChild.textContent = v;
+          li.addEventListener('click', () => copyToClipboard(v));
+          ul.appendChild(li);
         });
-    }
-
-    function limparCampos() {
-      logradouro.value = "";
-      bairro.value = "";
-      cidade.value = "";
-      uf.value = "";
-    }
-  </script>
-    <script>
-  // ---------- Validação de CPF ----------
-  function validarCPF(cpf) {
-    cpf = cpf.replace(/\D/g, "");
-    // 11 dígitos e não pode ser sequência repetida (111.111.111-11 etc.)
-    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-
-    for (let t = 9; t < 11; t++) {
-      let soma = 0;
-      for (let i = 0; i < t; i++) soma += cpf[i] * (t + 1 - i);
-      const dv = ((soma * 10) % 11) % 10;
-      if (dv != cpf[t]) return false;
-    }
-    return true;
-  }
-
-  const cpfInput = document.querySelector("#cpf");
-  const cpfMsg = document.querySelector("#cpfMsg");
-
-  // Máscara: 000.000.000-00
-  cpfInput.addEventListener("input", () => {
-    let v = cpfInput.value.replace(/\D/g, "").slice(0, 11);
-    v = v.replace(/(\d{3})(\d)/, "$1.$2")
-         .replace(/(\d{3})(\d)/, "$1.$2")
-         .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-    cpfInput.value = v;
-    cpfInput.style.border = "";
-    cpfMsg.textContent = "";
-  });
-
-  // Valida ao sair do campo
-  cpfInput.addEventListener("blur", () => {
-    if (cpfInput.value && !validarCPF(cpfInput.value)) {
-      cpfMsg.textContent = "CPF inválido.";
-      cpfInput.style.border = "2px solid red";
-    }
-  });
-
-  // ---------- Máscara do RG: 00.000.000-0 ----------
-  function mascararRG(valor) {
-    const bruto = valor.toUpperCase();
-    const digitos = bruto.replace(/\D/g, "").slice(0, 9);
-    // O dígito verificador pode ser "X" (só na 9ª posição)
-    let v = digitos;
-    if (digitos.length === 8 && /X$/.test(bruto)) v = digitos + "X";
-
-    return v
-      .replace(/^(.{2})(.)/, "$1.$2")
-      .replace(/^(.{2})\.(.{3})(.)/, "$1.$2.$3")
-      .replace(/^(.{2})\.(.{3})\.(.{3})(.)/, "$1.$2.$3-$4");
-  }
-
-  const rgInput = document.querySelector("#rg");
-  rgInput.addEventListener("input", () => {
-    rgInput.value = mascararRG(rgInput.value);
-  });
-
-  // ---------- Validação do formulário ----------
-  function validarFormulario() {
-    const camposObrigatorios = document.querySelectorAll(
-      'input[required], select'
-    );
-    let formularioValido = true;
-    let camposInvalidos = [];
-
-    camposObrigatorios.forEach(campo => {
-      if (
-        campo.tagName === "SELECT" &&
-        (campo.value === "" || campo.value === "--Select--")
-      ) {
-        formularioValido = false;
-        camposInvalidos.push(campo);
-      } else if (campo.tagName === "INPUT" && campo.value.trim() === "") {
-        formularioValido = false;
-        camposInvalidos.push(campo);
       }
+      batch.classList.toggle('show', qtd > 1);
+      batchActions.classList.toggle('show', qtd > 1);
+
+      card.classList.remove('flash');
+      void card.offsetWidth;
+      card.classList.add('flash');
+    }
+
+    const copiar = (el) => {
+      const v = input.value;
+      if(!v || v === 'Gerando...') return;
+      copyToClipboard(v, el);
+    };
+
+    $('.t-gen', node).addEventListener('click', gerar);
+    $('.t-regen', node).addEventListener('click', (e) => {
+      e.currentTarget.classList.remove('spin');
+      void e.currentTarget.offsetWidth;
+      e.currentTarget.classList.add('spin');
+      gerar();
+    });
+    $('.t-copy', node).addEventListener('click', (e) => copiar(e.currentTarget));
+    input.addEventListener('click', () => copiar());
+    $('.t-copy-all', node).addEventListener('click', (e) => lote.length && copyToClipboard(lote.join('\n'), e.currentTarget));
+
+    // Alternar pontuação reformata o valor atual sem gerar outro
+    check.addEventListener('change', () => {
+      const fmt = (v) => {
+        const limpo = v.replace(/[^0-9A-Z]/g, '');
+        if(!check.checked) return limpo;
+        return g.id === 'cpf' ? `${limpo.slice(0,3)}.${limpo.slice(3,6)}.${limpo.slice(6,9)}-${limpo.slice(9)}` : formatarCNPJ(limpo);
+      };
+      lote = lote.map(fmt);
+      if(input.value) input.value = fmt(input.value);
+      $('ul', batch).querySelectorAll('li > span:first-child').forEach((s, i) => s.textContent = lote[i]);
     });
 
-    // CPF precisa ser válido (dígitos verificadores)
-    if (!validarCPF(cpfInput.value)) {
-      formularioValido = false;
-      if (!camposInvalidos.includes(cpfInput)) camposInvalidos.push(cpfInput);
-      cpfMsg.textContent = "CPF inválido.";
+    $('.qty', node).addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if(!b) return;
+      qtd = +b.dataset.q;
+      b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    });
+
+    acoes[g.key.toLowerCase()] = gerar;
+    $('#geradores').appendChild(node);
+  });
+
+  const gerarTudo = () => Object.values(acoes).forEach(fn => fn());
+  $('#gerar-tudo').addEventListener('click', gerarTudo);
+
+  // =========================
+  // VALIDAR (CPF / CNPJ / CNPJ alfa)
+  // =========================
+
+  function validarCPF(cpf){
+    if(cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+    let soma = 0;
+    for(let i = 0; i < 9; i++) soma += +cpf[i] * (10 - i);
+    let resto = (soma * 10) % 11;
+    if(resto === 10) resto = 0;
+    if(resto !== +cpf[9]) return false;
+
+    soma = 0;
+    for(let i = 0; i < 10; i++) soma += +cpf[i] * (11 - i);
+    resto = (soma * 10) % 11;
+    if(resto === 10) resto = 0;
+
+    return resto === +cpf[10];
+  }
+
+  function validarCNPJ(cnpj){
+    // Vale para numérico e alfanumérico: os 2 últimos sempre são dígitos
+    if(cnpj.length !== 14 || !/^[0-9A-Z]{12}\d{2}$/.test(cnpj) || /^(\d)\1+$/.test(cnpj)) return false;
+    const dv1 = dvAlfa(cnpj, PESOS1);
+    const dv2 = dvAlfa(cnpj.slice(0,12) + dv1, PESOS2);
+    return `${dv1}${dv2}` === cnpj.slice(12);
+  }
+
+  function detectarTipo(limpo){
+    if(/[A-Z]/.test(limpo)) return 'alfa';
+    if(limpo.length > 11) return 'cnpj';
+    if(limpo.length === 0) return null;
+    return 'cpf';
+  }
+
+  function mascarar(limpo, tipo){
+    if(tipo === 'cpf'){
+      return limpo
+        .replace(/^(\d{3})(\d)/, '$1.$2')
+        .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+        .replace(/\.(\d{3})(\d)/, '.$1-$2');
+    }
+    return limpo
+      .replace(/^(\w{2})(\w)/, '$1.$2')
+      .replace(/^(\w{2})\.(\w{3})(\w)/, '$1.$2.$3')
+      .replace(/^(\w{2})\.(\w{3})\.(\w{3})(\w)/, '$1.$2.$3/$4')
+      .replace(/\/(\w{4})(\w)/, '/$1-$2');
+  }
+
+  const docInput = $('#doc');
+  const resultado = $('#resultado');
+  const ROTULO = { cpf:'CPF', cnpj:'CNPJ', alfa:'CNPJ alfanumérico' };
+
+  function estadoValidador(final){
+    const limpo = docInput.value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    const tipo = detectarTipo(limpo);
+    const total = tipo === 'cpf' ? 11 : 14;
+
+    document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.tipo === tipo));
+    $('#doc-count').textContent = tipo ? `${limpo.length} / ${total}` : '0 / 11–14';
+
+    const bar = $('#doc-progress');
+    bar.style.width = tipo ? `${Math.min(limpo.length / total, 1) * 100}%` : '0';
+
+    docInput.classList.remove('is-ok', 'is-bad');
+    resultado.className = '';
+
+    if(!tipo){
+      resultado.textContent = final ? 'Digite um CPF ou CNPJ para validar' : 'Aguardando documento…';
+      if(final) resultado.className = 'invalido';
+      bar.style.background = 'var(--accent)';
+      return;
     }
 
-    if (!formularioValido) {
-      alert("Por favor, preencha todos os campos obrigatórios corretamente.");
-      // Destaque visual (opcional)
-      camposInvalidos.forEach(campo => {
-        campo.style.border = "2px solid red";
-      });
-    } else {
-      // Redireciona se tudo estiver OK
-      window.location.href = "https://roquespp.github.io/index2/testeFeito";
+    const completo = (tipo === 'cpf' && limpo.length === 11) || limpo.length === 14;
+
+    if(!completo){
+      // CPF com 11 dígitos é completo; entre 12 e 13 ainda é CNPJ incompleto
+      if(final){
+        resultado.textContent = `❌ ${ROTULO[tipo]} incompleto`;
+        resultado.className = 'invalido';
+        docInput.classList.add('is-bad');
+      }else{
+        resultado.textContent = `Digitando ${ROTULO[tipo]}… faltam ${total - limpo.length}`;
+        resultado.className = 'parcial';
+      }
+      bar.style.background = 'var(--warn)';
+      return;
     }
+
+    const ok = tipo === 'cpf' ? validarCPF(limpo) : validarCNPJ(limpo);
+    resultado.textContent = ok ? `✅ ${ROTULO[tipo]} válido` : `❌ ${ROTULO[tipo]} inválido`;
+    resultado.className = ok ? 'valido' : 'invalido';
+    docInput.classList.add(ok ? 'is-ok' : 'is-bad');
+    bar.style.background = ok ? 'var(--ok)' : 'var(--bad)';
   }
+
+  docInput.addEventListener('input', () => {
+    const limpo = docInput.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 14);
+    const tipo = detectarTipo(limpo);
+    docInput.value = tipo ? mascarar(limpo, tipo) : '';
+    estadoValidador(false);
+  });
+
+  docInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') estadoValidador(true); });
+  $('#doc-validar').addEventListener('click', () => estadoValidador(true));
+  $('#doc-clear').addEventListener('click', () => { docInput.value = ''; estadoValidador(false); docInput.focus(); });
+
+  // =========================
+  // ATALHOS
+  // =========================
+
+  document.addEventListener('keydown', (e) => {
+    if(e.ctrlKey || e.metaKey || e.altKey) return;
+    const emCampo = e.target.matches('input:not([readonly]), textarea');
+
+    if(e.key === 'Escape' && emCampo){ e.target.blur(); return; }
+    if(emCampo) return;
+
+    const k = e.key.toLowerCase();
+    if(k === 'v'){ e.preventDefault(); docInput.focus(); return; }
+    if(k === 'g'){ gerarTudo(); return; }
+    if(acoes[k]) acoes[k]();
+  });
+
+  renderHistorico();
+
 </script>
-  <footer>
-    &copy; 2025 - Página de Testes | Desenvolvido por Roque
-  </footer>
 
 </body>
-
 </html>
