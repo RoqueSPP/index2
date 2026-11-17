@@ -1,28 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#0e1118" />
-  <title>Gerador e Validador de CPF, CNPJ e Nomes</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0e1118">
+  <title>Gerador e Validador</title>
 
   <style>
     :root {
       color-scheme: dark;
       --bg: #0e1118;
       --card: #151a24;
+      --card-hover: #181e2a;
       --field: #0e1118;
       --line: #252d3d;
       --line-strong: #37425a;
       --text: #e7ebf3;
       --muted: #8e99ad;
+      --faint: #586479;
       --accent: #8b9bff;
+      --accent-hover: #a3b0ff;
       --accent-ink: #10142b;
+      --accent-soft: rgba(139, 155, 255, .12);
       --ok: #5fd3a0;
       --bad: #ff7a85;
+      --warn: #f5c26b;
       --font: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
       --mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+      --radius: 16px;
+      --radius-sm: 10px;
     }
 
     * { box-sizing: border-box; margin: 0; }
@@ -37,53 +44,110 @@
     }
 
     .container {
-      max-width: 860px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 48px 20px;
+      padding: 48px 20px 64px;
     }
 
-    header { margin-bottom: 26px; }
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
     header h1 { font-size: 1.8rem; letter-spacing: -0.02em; line-height: 1.2; }
     header p { color: var(--muted); margin-top: 6px; }
+
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 20px;
+      align-items: start;
+    }
+    .main { display: grid; gap: 20px; min-width: 0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: 20px;
+    }
 
     .card {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    .row {
+      border-radius: var(--radius);
+      padding: 20px;
       display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 20px;
-      align-items: center;
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--line);
+      gap: 14px;
+      min-width: 0;
+      transition: border-color .15s, background .15s;
     }
-    .row:last-of-type { border-bottom: 0; }
+    .card:hover { border-color: var(--line-strong); }
+    .card.flash { animation: flash .6s ease; }
+    @keyframes flash {
+      0%   { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+      100% { border-color: var(--line); box-shadow: 0 0 0 0 transparent; }
+    }
 
-    .left { display: grid; gap: 10px; }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-title { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .icon {
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      border-radius: 9px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      flex-shrink: 0;
+    }
+    .card-sub { color: var(--muted); font-size: .85rem; font-weight: 400; }
 
-    .right { display: flex; gap: 8px; align-items: center; min-width: 0; }
+    kbd {
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--muted);
+      border: 1px solid var(--line-strong);
+      border-bottom-width: 2px;
+      border-radius: 6px;
+      padding: 1px 6px;
+      background: var(--field);
+    }
 
-    button { font: inherit; cursor: pointer; transition: background .15s, border-color .15s, transform .1s; }
+    .row { display: flex; gap: 8px; align-items: center; min-width: 0; }
+
+    /* ---------- Controles ---------- */
+    button { font: inherit; cursor: pointer; transition: background .15s, border-color .15s, color .15s, transform .1s; }
     button:active { transform: scale(.98); }
-    button:focus-visible, input:focus-visible {
+    button:focus-visible, input:focus-visible, select:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
 
     .small-btn {
       height: 40px;
-      width: 100%;
+      padding: 0 18px;
       border: 0;
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       background: var(--accent);
       color: var(--accent-ink);
       font-weight: 700;
+      white-space: nowrap;
     }
-    .small-btn:hover { background: #a3b0ff; }
+    .small-btn:hover { background: var(--accent-hover); }
+    .small-btn.full { width: 100%; }
 
     .display {
       flex: 1;
@@ -96,60 +160,271 @@
       color: var(--text);
       background: var(--field);
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       text-align: left;
+      transition: border-color .15s;
     }
-    .display::placeholder { color: #586479; font-family: var(--font); letter-spacing: 0; }
+    .display::placeholder { color: var(--faint); font-family: var(--font); letter-spacing: 0; }
     .display:hover { border-color: var(--line-strong); }
-    .display:focus { border-color: var(--accent); }
-
-    .controls { display: flex; gap: 8px; }
+    .display:focus { border-color: var(--accent); outline: none; }
+    .display[readonly] { cursor: pointer; }
+    .display.is-ok  { border-color: rgba(95, 211, 160, .6); }
+    .display.is-bad { border-color: rgba(255, 122, 133, .6); }
 
     .btn {
       height: 40px;
       padding: 0 16px;
       border: 1px solid var(--line-strong);
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       background: transparent;
       color: var(--text);
       font-weight: 600;
+      white-space: nowrap;
     }
     .btn:hover { background: #1d2534; }
-    .btn.secondary { width: 40px; padding: 0; color: var(--muted); font-size: 1.15rem; }
+    .btn.secondary { width: 40px; padding: 0; color: var(--muted); font-size: 1.15rem; flex-shrink: 0; }
     .btn.secondary:hover { color: var(--text); }
+    .btn.copied { color: var(--ok); border-color: rgba(95, 211, 160, .5); }
+    .btn.spin { animation: spin .4s ease; }
+    @keyframes spin { to { transform: rotate(-360deg); } }
 
-    .checkbox {
+    .options {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Toggle de pontuação */
+    .switch {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       color: var(--muted);
       font-size: .9rem;
+      cursor: pointer;
+      user-select: none;
     }
-    .checkbox input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
-    .checkbox label { cursor: pointer; }
+    .switch input { position: absolute; opacity: 0; pointer-events: none; }
+    .switch .track {
+      width: 34px; height: 20px;
+      border-radius: 999px;
+      background: var(--line);
+      border: 1px solid var(--line-strong);
+      position: relative;
+      transition: background .15s, border-color .15s;
+    }
+    .switch .track::after {
+      content: "";
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform .15s, background .15s;
+    }
+    .switch input:checked + .track { background: var(--accent-soft); border-color: var(--accent); }
+    .switch input:checked + .track::after { transform: translateX(14px); background: var(--accent); }
+    .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Seletor de quantidade */
+    .qty {
+      display: inline-flex;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .qty button {
+      height: 30px;
+      padding: 0 10px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 600;
+    }
+    .qty button + button { border-left: 1px solid var(--line); }
+    .qty button:hover { color: var(--text); background: #1d2534; }
+    .qty button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+
+    /* Lista de lote */
+    .batch {
+      display: none;
+      max-height: 180px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--field);
+    }
+    .batch.show { display: block; }
+    .batch li {
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      font-family: var(--mono);
+      font-size: .92rem;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+    }
+    .batch li:last-child { border-bottom: 0; }
+    .batch li:hover { background: var(--card-hover); }
+    .batch li span.hint { font-family: var(--font); font-size: .75rem; color: var(--faint); }
+    .batch ul { padding: 0; }
+    .batch-actions { display: none; justify-content: flex-end; }
+    .batch-actions.show { display: flex; }
+
+    /* ---------- Validador ---------- */
+    .validator .row { flex-wrap: nowrap; }
+    .detect {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      font-size: .78rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      color: var(--faint);
+      transition: all .15s;
+    }
+    .chip.on { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 
     #resultado {
-      margin: 0 24px 22px;
       padding: 12px 16px;
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       font-weight: 600;
       text-align: center;
-      display: none;
+      border: 1px dashed var(--line-strong);
+      color: var(--faint);
+      transition: all .15s;
     }
-    #resultado.valido,
-    #resultado.invalido { display: block; }
-    .valido   { color: var(--ok);  background: rgba(95, 211, 160, .1); border: 1px solid rgba(95, 211, 160, .35); }
-    .invalido { color: var(--bad); background: rgba(255, 122, 133, .1); border: 1px solid rgba(255, 122, 133, .35); }
+    .valido   { color: var(--ok)  !important; background: rgba(95, 211, 160, .1);  border: 1px solid rgba(95, 211, 160, .35)  !important; }
+    .invalido { color: var(--bad) !important; background: rgba(255, 122, 133, .1); border: 1px solid rgba(255, 122, 133, .35) !important; }
+    .parcial  { color: var(--warn) !important; background: rgba(245, 194, 107, .08); border: 1px solid rgba(245, 194, 107, .3) !important; }
+
+    .progress {
+      height: 4px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress > div {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width .2s, background .2s;
+    }
+
+    /* ---------- Histórico ---------- */
+    aside.card { position: sticky; top: 20px; max-height: calc(100vh - 40px); grid-template-rows: auto auto 1fr; }
+    .history { overflow: auto; min-height: 120px; display: grid; gap: 6px; align-content: start; padding: 0; }
+    .history li {
+      list-style: none;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2px 10px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--field);
+      cursor: pointer;
+      animation: slideIn .2s ease;
+    }
+    .history li:hover { border-color: var(--line-strong); }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } }
+    .tag {
+      grid-row: span 2;
+      font-size: .68rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 6px;
+      padding: 3px 6px;
+      text-align: center;
+      min-width: 46px;
+    }
+    .history .val { font-family: var(--mono); font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history .time { font-size: .72rem; color: var(--faint); }
+    .empty { color: var(--faint); font-size: .9rem; text-align: center; padding: 24px 8px; }
+
+    .filter { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter button {
+      font-size: .78rem; font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--muted);
+    }
+    .filter button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+    .link-btn {
+      border: 0; background: none; color: var(--muted);
+      font-size: .85rem; font-weight: 600; padding: 4px 6px; border-radius: 6px;
+    }
+    .link-btn:hover { color: var(--bad); }
+
+    /* ---------- Toast ---------- */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--card);
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: .92rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      transition: opacity .2s, transform .2s;
+      z-index: 10;
+      max-width: calc(100vw - 32px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast b { color: var(--ok); font-family: var(--mono); font-weight: 600; }
+
+    .shortcuts { color: var(--faint); font-size: .82rem; display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+
+    /* ---------- Responsivo ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; }
+      aside.card { position: static; max-height: none; }
+      .history { max-height: 320px; }
+    }
 
     @media (max-width: 640px) {
-      .container { padding: 28px 14px; }
-      .row { grid-template-columns: 1fr; gap: 12px; padding: 18px; }
-      .left { grid-template-columns: 1fr auto; align-items: center; }
-      #resultado { margin: 0 18px 18px; }
+      .container { padding: 28px 16px 48px; }
+      header h1 { font-size: 1.5rem; }
+      .header-actions, .header-actions .small-btn { width: 100%; }
+      .card { padding: 18px; }
+      kbd, .shortcuts { display: none; }
+    }
+
+    @media (max-width: 400px) {
+      .gen .row { flex-wrap: wrap; }
+      .gen .display { flex-basis: 100%; }
+      .gen .row .btn:not(.secondary) { flex: 1; }
+      .validator .row { flex-wrap: wrap; }
+      .validator .small-btn { width: 100%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
     }
   </style>
 </head>
@@ -159,124 +434,153 @@
 <div class="container">
 
   <header>
-    <h1>Gerador e Validador</h1>
-    <p>CPF, CNPJ, CNPJ alfanumérico e nomes para testes.</p>
+    <div>
+      <h1>Gerador e Validador</h1>
+      <p>CPF, CNPJ, CNPJ alfanumérico e nomes para testes.</p>
+    </div>
+    <div class="header-actions">
+      <button class="small-btn" id="gerar-tudo">Gerar tudo <kbd>G</kbd></button>
+    </div>
   </header>
 
-  <div class="card">
+  <div class="layout">
 
-    <!-- NOME -->
-    <div class="row">
-      <div class="left">
-        <button class="small-btn" id="btn-gerar-nome">Gerar nome</button>
-      </div>
-      <div class="right">
-        <input id="nome-input" class="display" type="text" readonly placeholder="Nome gerado" aria-label="Nome gerado">
-        <div class="controls">
-          <button class="btn" id="nome-copy">Copiar</button>
-          <button class="btn secondary" id="nome-regen" title="Gerar outro" aria-label="Gerar outro nome">↺</button>
+    <div class="main">
+
+      <div class="grid" id="geradores"></div>
+
+      <!-- VALIDADOR -->
+      <section class="card validator">
+        <div class="card-head">
+          <div class="card-title">
+            <span class="icon">✓</span>
+            <div>
+              Validar documento
+              <div class="card-sub">Detecta CPF, CNPJ ou CNPJ alfanumérico automaticamente</div>
+            </div>
+          </div>
+          <kbd>V</kbd>
         </div>
-      </div>
+
+        <div class="row">
+          <input type="text" id="doc" class="display" maxlength="18" autocomplete="off" spellcheck="false"
+                 placeholder="Digite ou cole um CPF / CNPJ" aria-label="Documento para validar">
+          <button class="btn secondary" id="doc-clear" title="Limpar" aria-label="Limpar campo">✕</button>
+          <button class="small-btn" id="doc-validar">Validar</button>
+        </div>
+
+        <div class="options">
+          <div class="detect" aria-hidden="true">
+            <span class="chip" data-tipo="cpf">CPF</span>
+            <span class="chip" data-tipo="cnpj">CNPJ</span>
+            <span class="chip" data-tipo="alfa">CNPJ alfa</span>
+          </div>
+          <span class="card-sub" id="doc-count">0 / 11–14</span>
+        </div>
+
+        <div class="progress"><div id="doc-progress"></div></div>
+
+        <div id="resultado" role="status" aria-live="polite">Aguardando documento…</div>
+      </section>
+
     </div>
 
-    <!-- CNPJ -->
-    <div class="row">
-      <div class="left">
-        <button class="small-btn" id="btn-gerar-cnpj">Gerar CNPJ</button>
-        <div class="checkbox">
-          <input type="checkbox" id="pontuar-cnpj" checked>
-          <label for="pontuar-cnpj">Pontuação</label>
+    <!-- HISTÓRICO -->
+    <aside class="card" aria-label="Histórico">
+      <div class="card-head">
+        <div class="card-title">
+          <span class="icon">≡</span>
+          <div>
+            Histórico
+            <div class="card-sub" id="hist-count">0 itens · clique para copiar</div>
+          </div>
         </div>
+        <button class="link-btn" id="hist-clear">Limpar</button>
       </div>
-      <div class="right">
-        <input id="cnpj-input" class="display" type="text" readonly placeholder="CNPJ gerado" aria-label="CNPJ gerado">
-        <div class="controls">
-          <button class="btn" id="cnpj-copy">Copiar</button>
-          <button class="btn secondary" id="cnpj-regen" title="Gerar outro" aria-label="Gerar outro CNPJ">↺</button>
-        </div>
-      </div>
-    </div>
 
-    <!-- CNPJ ALFANUMERICO -->
-    <div class="row">
-      <div class="left">
-        <button class="small-btn" id="btn-gerar-cnpj-alpha">Gerar CNPJ alfa</button>
-        <div class="checkbox">
-          <input type="checkbox" id="pontuar-cnpj-alpha" checked>
-          <label for="pontuar-cnpj-alpha">Pontuação</label>
-        </div>
+      <div class="filter" id="hist-filter">
+        <button aria-pressed="true" data-f="all">Todos</button>
+        <button aria-pressed="false" data-f="NOME">Nome</button>
+        <button aria-pressed="false" data-f="CNPJ">CNPJ</button>
+        <button aria-pressed="false" data-f="ALFA">Alfa</button>
+        <button aria-pressed="false" data-f="CPF">CPF</button>
       </div>
-      <div class="right">
-        <input id="cnpj-alpha-input" class="display" type="text" readonly placeholder="CNPJ alfanumérico gerado" aria-label="CNPJ alfanumérico gerado">
-        <div class="controls">
-          <button class="btn" id="cnpj-alpha-copy">Copiar</button>
-          <button class="btn secondary" id="cnpj-alpha-regen" title="Gerar outro" aria-label="Gerar outro CNPJ alfanumérico">↺</button>
-        </div>
-      </div>
-    </div>
 
-    <!-- CPF -->
-    <div class="row">
-      <div class="left">
-        <button class="small-btn" id="btn-gerar-cpf">Gerar CPF</button>
-        <div class="checkbox">
-          <input type="checkbox" id="pontuar-cpf" checked>
-          <label for="pontuar-cpf">Pontuação</label>
-        </div>
-      </div>
-      <div class="right">
-        <input id="cpf-input" class="display" type="text" readonly placeholder="CPF gerado" aria-label="CPF gerado">
-        <div class="controls">
-          <button class="btn" id="cpf-copy">Copiar</button>
-          <button class="btn secondary" id="cpf-regen" title="Gerar outro" aria-label="Gerar outro CPF">↺</button>
-        </div>
-      </div>
-    </div>
+      <ul class="history" id="history"></ul>
+    </aside>
 
-    <!-- VALIDAR CPF -->
-    <div class="row">
-      <div class="left">
-        <button class="small-btn" onclick="verificarCPF()">Validar CPF</button>
-      </div>
-      <div class="right">
-        <input type="text" id="cpf" class="display" maxlength="14" inputmode="numeric" placeholder="Digite o CPF" aria-label="CPF para validar">
-      </div>
-    </div>
+  </div>
 
-    <div id="resultado" role="status" aria-live="polite"></div>
-
+  <div class="shortcuts">
+    <span><kbd>N</kbd> nome</span>
+    <span><kbd>J</kbd> CNPJ</span>
+    <span><kbd>A</kbd> CNPJ alfa</span>
+    <span><kbd>C</kbd> CPF</span>
+    <span><kbd>G</kbd> gerar tudo</span>
+    <span><kbd>V</kbd> validar</span>
+    <span><kbd>Esc</kbd> sair do campo</span>
   </div>
 
 </div>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<template id="tpl-gen">
+  <section class="card gen">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="icon"></span>
+        <div>
+          <span class="t-title"></span>
+          <div class="card-sub t-sub"></div>
+        </div>
+      </div>
+      <kbd class="t-key"></kbd>
+    </div>
+
+    <div class="row">
+      <input class="display" type="text" readonly title="Clique para copiar">
+      <button class="btn t-copy">Copiar</button>
+      <button class="btn secondary t-regen" title="Gerar outro">↺</button>
+    </div>
+
+    <div class="options">
+      <label class="switch t-switch">
+        <input type="checkbox" checked>
+        <span class="track"></span>
+        Pontuação
+      </label>
+      <div class="qty" role="group" aria-label="Quantidade">
+        <button aria-pressed="true" data-q="1">1</button>
+        <button aria-pressed="false" data-q="5">5</button>
+        <button aria-pressed="false" data-q="10">10</button>
+      </div>
+    </div>
+
+    <div class="batch"><ul></ul></div>
+    <div class="batch-actions"><button class="btn t-copy-all">Copiar todos</button></div>
+
+    <button class="small-btn full t-gen"></button>
+  </section>
+</template>
+
 <script>
 
   // =========================
-  // NOME
+  // UTIL
   // =========================
 
-  async function gerarNome() {
-    const res = await fetch('https://randomuser.me/api/?nat=br');
-    const data = await res.json();
-    return `${data.results[0].name.first} ${data.results[0].name.last}`;
+  const $ = (s, el = document) => el.querySelector(s);
+  const rnd = (n) => Math.floor(Math.random() * n);
+
+  let toastTimer;
+  function toast(html){
+    const t = $('#toast');
+    t.innerHTML = html;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
   }
-
-  async function atualizarNome(){
-    const input = document.getElementById('nome-input');
-    input.value = 'Gerando...';
-    try{
-      input.value = await gerarNome();
-    }catch{
-      input.value = 'Erro ao gerar nome';
-    }
-  }
-
-  document.getElementById('btn-gerar-nome').addEventListener('click', atualizarNome);
-  document.getElementById('nome-regen').addEventListener('click', atualizarNome);
-
-  // =========================
-  // COPIAR
-  // =========================
 
   async function copyToClipboard(text, el){
     try{
@@ -290,9 +594,39 @@
       tmp.remove();
     }
 
-    const original = el.textContent;
-    el.textContent = 'Copiado!';
-    setTimeout(()=>{ el.textContent = original; }, 1000);
+    const resumo = text.includes('\n') ? `${text.split('\n').length} itens` : text;
+    toast(`Copiado: <b></b>`);
+    $('#toast b').textContent = resumo;
+
+    if(el && el.tagName === 'BUTTON' && !el.classList.contains('secondary')){
+      const original = el.dataset.label || el.textContent;
+      el.dataset.label = original;
+      el.textContent = 'Copiado!';
+      el.classList.add('copied');
+      setTimeout(() => { el.textContent = original; el.classList.remove('copied'); }, 1000);
+    }
+  }
+
+  // =========================
+  // NOME
+  // =========================
+
+  const NOMES = ['Ana','Bruno','Carla','Diego','Eduarda','Felipe','Gabriela','Henrique','Isabela','João','Larissa','Lucas','Mariana','Mateus','Natália','Otávio','Paula','Rafael','Sofia','Thiago','Vitória','Gustavo','Beatriz','Leonardo'];
+  const SOBRENOMES = ['Silva','Santos','Oliveira','Souza','Rodrigues','Ferreira','Alves','Pereira','Lima','Gomes','Costa','Ribeiro','Martins','Carvalho','Almeida','Lopes','Araújo','Barbosa','Rocha','Dias'];
+
+  function nomeLocal(){
+    return `${NOMES[rnd(NOMES.length)]} ${SOBRENOMES[rnd(SOBRENOMES.length)]}`;
+  }
+
+  async function gerarNomes(qtd){
+    try{
+      const res = await fetch(`https://randomuser.me/api/?nat=br&inc=name&results=${qtd}`);
+      const data = await res.json();
+      return data.results.map(r => `${r.name.first} ${r.name.last}`);
+    }catch{
+      // Sem conexão: usa lista local
+      return Array.from({length: qtd}, nomeLocal);
+    }
   }
 
   // =========================
@@ -301,66 +635,50 @@
 
   function gerarCNPJ(pontuar){
 
-    const d = Array.from({length:8}, ()=>Math.floor(Math.random()*10));
+    const d = Array.from({length:8}, () => rnd(10));
 
-    const calcDV = (base,pesos)=>{
-      let soma = base.reduce((acc,n,i)=>acc+n*pesos[i],0);
-      let resto = soma % 11;
-      return resto < 2 ? 0 : 11-resto;
+    const calcDV = (base,pesos) => {
+      const soma = base.reduce((acc,n,i) => acc + n*pesos[i], 0);
+      const resto = soma % 11;
+      return resto < 2 ? 0 : 11 - resto;
     };
 
     const v0 = calcDV([...d,0,0,0,1], [5,4,3,2,9,8,7,6,5,4,3,2]);
     const v1 = calcDV([...d,0,0,0,1,v0], [6,5,4,3,2,9,8,7,6,5,4,3,2]);
 
-    const cnpj = [...d,0,0,0,1,v0,v1];
-
-    return pontuar
-      ? `${cnpj.slice(0,2).join('')}.${cnpj.slice(2,5).join('')}.${cnpj.slice(5,8).join('')}/${cnpj.slice(8,12).join('')}-${cnpj.slice(12).join('')}`
-      : cnpj.join('');
+    const cnpj = [...d,0,0,0,1,v0,v1].join('');
+    return pontuar ? formatarCNPJ(cnpj) : cnpj;
   }
 
   // =========================
   // CNPJ ALFANUMERICO
   // =========================
 
+  const ALFA_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const PESOS1 = [5,4,3,2,9,8,7,6,5,4,3,2];
+  const PESOS2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
+
+  const valorChar = (c) => c.charCodeAt(0) - 48;
+
+  function dvAlfa(base, pesos){
+    let soma = 0;
+    for(let i = 0; i < pesos.length; i++) soma += valorChar(base[i]) * pesos[i];
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  }
+
   function gerarCNPJAlfanumerico(pontuar){
-
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-    const pesos1 = [5,4,3,2,9,8,7,6,5,4,3,2];
-    const pesos2 = [6,5,4,3,2,9,8,7,6,5,4,3,2];
-
-    function randomChar(){
-      return chars[Math.floor(Math.random()*chars.length)];
-    }
-
-    function valorChar(c){
-      return c.charCodeAt(0)-48;
-    }
-
-    function calcularDV(base,pesos){
-      let soma = 0;
-      for(let i=0;i<pesos.length;i++){
-        soma += valorChar(base[i]) * pesos[i];
-      }
-      const resto = soma % 11;
-      return resto < 2 ? 0 : 11-resto;
-    }
-
     let base = '';
-    for(let i=0;i<12;i++){
-      base += randomChar();
-    }
+    for(let i = 0; i < 12; i++) base += ALFA_CHARS[rnd(ALFA_CHARS.length)];
 
-    const dv1 = calcularDV(base,pesos1);
-    const dv2 = calcularDV(base+dv1,pesos2);
-
+    const dv1 = dvAlfa(base, PESOS1);
+    const dv2 = dvAlfa(base + dv1, PESOS2);
     const cnpj = base + dv1 + dv2;
 
-    return pontuar
-      ? `${cnpj.slice(0,2)}.${cnpj.slice(2,5)}.${cnpj.slice(5,8)}/${cnpj.slice(8,12)}-${cnpj.slice(12,14)}`
-      : cnpj;
+    return pontuar ? formatarCNPJ(cnpj) : cnpj;
   }
+
+  const formatarCNPJ = (c) => `${c.slice(0,2)}.${c.slice(2,5)}.${c.slice(5,8)}/${c.slice(8,12)}-${c.slice(12,14)}`;
 
   // =========================
   // CPF
@@ -368,112 +686,308 @@
 
   function gerarCPF(pontuar){
 
-    const base = Array.from({length:9}, ()=>Math.floor(Math.random()*10));
+    const base = Array.from({length:9}, () => rnd(10));
 
-    const calcDV = (nums,peso)=>{
-      let soma = nums.reduce((acc,n,i)=>acc+n*(peso-i),0);
-      let resto = soma % 11;
-      return resto < 2 ? 0 : 11-resto;
+    const calcDV = (nums,peso) => {
+      const soma = nums.reduce((acc,n,i) => acc + n*(peso-i), 0);
+      const resto = soma % 11;
+      return resto < 2 ? 0 : 11 - resto;
     };
 
     const d1 = calcDV(base,10);
     const d2 = calcDV([...base,d1],11);
 
-    const cpf = [...base,d1,d2];
-
-    return pontuar
-      ? `${cpf.slice(0,3).join('')}.${cpf.slice(3,6).join('')}.${cpf.slice(6,9).join('')}-${cpf.slice(9).join('')}`
-      : cpf.join('');
+    const cpf = [...base,d1,d2].join('');
+    return pontuar ? `${cpf.slice(0,3)}.${cpf.slice(3,6)}.${cpf.slice(6,9)}-${cpf.slice(9)}` : cpf;
   }
 
   // =========================
-  // EVENTOS (gerar, gerar outro, copiar)
+  // HISTÓRICO
   // =========================
 
-  function ligarGerador(prefixo, idInput, idCheck, fn){
-    const input = document.getElementById(idInput);
-    const gerar = ()=>{ input.value = fn(document.getElementById(idCheck).checked); };
+  const historico = [];
+  let filtro = 'all';
 
-    document.getElementById(`btn-gerar-${prefixo}`).addEventListener('click', gerar);
-    document.getElementById(`${prefixo}-regen`).addEventListener('click', gerar);
-    document.getElementById(`${prefixo}-copy`).addEventListener('click', (e)=>{
-      if(!input.value) return;
-      copyToClipboard(input.value, e.currentTarget);
-    });
+  function addHistorico(tag, valores){
+    const hora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    valores.forEach(v => historico.unshift({tag, v, hora}));
+    historico.splice(50);
+    renderHistorico();
   }
 
-  ligarGerador('cnpj', 'cnpj-input', 'pontuar-cnpj', gerarCNPJ);
-  ligarGerador('cnpj-alpha', 'cnpj-alpha-input', 'pontuar-cnpj-alpha', gerarCNPJAlfanumerico);
-  ligarGerador('cpf', 'cpf-input', 'pontuar-cpf', gerarCPF);
+  function renderHistorico(){
+    const ul = $('#history');
+    const itens = historico.filter(h => filtro === 'all' || h.tag === filtro);
+    $('#hist-count').textContent = `${historico.length} ${historico.length === 1 ? 'item' : 'itens'} · clique para copiar`;
 
-  document.getElementById('nome-copy').addEventListener('click', (e)=>{
-    const v = document.getElementById('nome-input').value;
-    if(!v || v === 'Gerando...' || v.startsWith('Erro')) return;
-    copyToClipboard(v, e.currentTarget);
-  });
-
-  // =========================
-  // VALIDAR CPF
-  // =========================
-
-  function validarCPF(cpf){
-
-    cpf = cpf.replace(/\D/g,'');
-
-    if(cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
-
-    let soma = 0;
-    for(let i=0;i<9;i++){
-      soma += parseInt(cpf[i]) * (10-i);
-    }
-
-    let resto = (soma*10)%11;
-    if(resto===10) resto=0;
-    if(resto !== parseInt(cpf[9])) return false;
-
-    soma = 0;
-    for(let i=0;i<10;i++){
-      soma += parseInt(cpf[i]) * (11-i);
-    }
-
-    resto = (soma*10)%11;
-    if(resto===10) resto=0;
-
-    return resto === parseInt(cpf[10]);
-  }
-
-  function verificarCPF(){
-
-    const cpf = document.getElementById('cpf').value;
-    const resultado = document.getElementById('resultado');
-
-    if(!cpf.trim()){
-      resultado.textContent = 'Digite um CPF para validar';
-      resultado.className = 'invalido';
+    if(!itens.length){
+      ul.innerHTML = '<div class="empty">Nada gerado ainda.</div>';
       return;
     }
 
-    if(validarCPF(cpf)){
-      resultado.textContent = '✅ CPF válido';
-      resultado.className = 'valido';
-    }else{
-      resultado.textContent = '❌ CPF inválido';
-      resultado.className = 'invalido';
-    }
+    ul.innerHTML = '';
+    itens.forEach(h => {
+      const li = document.createElement('li');
+      li.title = 'Clique para copiar';
+      li.innerHTML = `<span class="tag"></span><span class="val"></span><span class="time"></span>`;
+      $('.tag', li).textContent = h.tag;
+      $('.val', li).textContent = h.v;
+      $('.time', li).textContent = h.hora;
+      li.addEventListener('click', () => copyToClipboard(h.v));
+      ul.appendChild(li);
+    });
   }
 
-  // Enter valida; máscara 000.000.000-00 enquanto digita
-  document.getElementById('cpf').addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter') verificarCPF();
+  $('#hist-filter').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if(!b) return;
+    filtro = b.dataset.f;
+    $('#hist-filter').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    renderHistorico();
   });
 
-  document.getElementById('cpf').addEventListener('input', (e)=>{
-    const n = e.target.value.replace(/\D/g,'').slice(0,11);
-    e.target.value = n
-      .replace(/^(\d{3})(\d)/, '$1.$2')
-      .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
-      .replace(/\.(\d{3})(\d)/, '.$1-$2');
+  $('#hist-clear').addEventListener('click', () => {
+    historico.length = 0;
+    renderHistorico();
   });
+
+  // =========================
+  // GERADORES (cards)
+  // =========================
+
+  const GERADORES = [
+    { id:'nome',  tag:'NOME', icon:'Aa', title:'Nome',             sub:'Nome e sobrenome brasileiros', key:'N', pontuacao:false, async:true, fn: gerarNomes },
+    { id:'cnpj',  tag:'CNPJ', icon:'#',  title:'CNPJ',             sub:'14 dígitos numéricos',          key:'J', pontuacao:true,  fn: gerarCNPJ },
+    { id:'alfa',  tag:'ALFA', icon:'A1', title:'CNPJ alfanumérico', sub:'Novo formato (IN RFB 2.229/24)', key:'A', pontuacao:true, fn: gerarCNPJAlfanumerico },
+    { id:'cpf',   tag:'CPF',  icon:'ID', title:'CPF',              sub:'11 dígitos com DV válido',     key:'C', pontuacao:true,  fn: gerarCPF },
+  ];
+
+  const acoes = {};
+
+  GERADORES.forEach(g => {
+    const node = $('#tpl-gen').content.cloneNode(true);
+    const card = $('.card', node);
+    const input = $('.display', node);
+    const check = $('.t-switch input', node);
+    const batch = $('.batch', node);
+    const batchActions = $('.batch-actions', node);
+    let qtd = 1;
+    let lote = [];
+
+    card.id = `card-${g.id}`;
+    $('.icon', node).textContent = g.icon;
+    $('.t-title', node).textContent = g.title;
+    $('.t-sub', node).textContent = g.sub;
+    $('.t-key', node).textContent = g.key;
+    $('.t-gen', node).textContent = `Gerar ${g.title}`;
+    input.placeholder = `${g.title} gerado`;
+    input.setAttribute('aria-label', `${g.title} gerado`);
+    $('.t-regen', node).setAttribute('aria-label', `Gerar outro ${g.title}`);
+    if(!g.pontuacao) $('.t-switch', node).style.visibility = 'hidden';
+
+    async function gerar(){
+      let valores;
+      if(g.async){
+        input.value = 'Gerando...';
+        valores = await g.fn(qtd);
+      }else{
+        valores = Array.from({length: qtd}, () => g.fn(check.checked));
+      }
+
+      lote = valores;
+      input.value = valores[0];
+      addHistorico(g.tag, valores);
+
+      // Lote
+      const ul = $('ul', batch);
+      ul.innerHTML = '';
+      if(qtd > 1){
+        valores.forEach(v => {
+          const li = document.createElement('li');
+          li.innerHTML = '<span></span><span class="hint">copiar</span>';
+          li.firstChild.textContent = v;
+          li.addEventListener('click', () => copyToClipboard(v));
+          ul.appendChild(li);
+        });
+      }
+      batch.classList.toggle('show', qtd > 1);
+      batchActions.classList.toggle('show', qtd > 1);
+
+      card.classList.remove('flash');
+      void card.offsetWidth;
+      card.classList.add('flash');
+    }
+
+    const copiar = (el) => {
+      const v = input.value;
+      if(!v || v === 'Gerando...') return;
+      copyToClipboard(v, el);
+    };
+
+    $('.t-gen', node).addEventListener('click', gerar);
+    $('.t-regen', node).addEventListener('click', (e) => {
+      e.currentTarget.classList.remove('spin');
+      void e.currentTarget.offsetWidth;
+      e.currentTarget.classList.add('spin');
+      gerar();
+    });
+    $('.t-copy', node).addEventListener('click', (e) => copiar(e.currentTarget));
+    input.addEventListener('click', () => copiar());
+    $('.t-copy-all', node).addEventListener('click', (e) => lote.length && copyToClipboard(lote.join('\n'), e.currentTarget));
+
+    // Alternar pontuação reformata o valor atual sem gerar outro
+    check.addEventListener('change', () => {
+      const fmt = (v) => {
+        const limpo = v.replace(/[^0-9A-Z]/g, '');
+        if(!check.checked) return limpo;
+        return g.id === 'cpf' ? `${limpo.slice(0,3)}.${limpo.slice(3,6)}.${limpo.slice(6,9)}-${limpo.slice(9)}` : formatarCNPJ(limpo);
+      };
+      lote = lote.map(fmt);
+      if(input.value) input.value = fmt(input.value);
+      $('ul', batch).querySelectorAll('li > span:first-child').forEach((s, i) => s.textContent = lote[i]);
+    });
+
+    $('.qty', node).addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if(!b) return;
+      qtd = +b.dataset.q;
+      b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    });
+
+    acoes[g.key.toLowerCase()] = gerar;
+    $('#geradores').appendChild(node);
+  });
+
+  const gerarTudo = () => Object.values(acoes).forEach(fn => fn());
+  $('#gerar-tudo').addEventListener('click', gerarTudo);
+
+  // =========================
+  // VALIDAR (CPF / CNPJ / CNPJ alfa)
+  // =========================
+
+  function validarCPF(cpf){
+    if(cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+    let soma = 0;
+    for(let i = 0; i < 9; i++) soma += +cpf[i] * (10 - i);
+    let resto = (soma * 10) % 11;
+    if(resto === 10) resto = 0;
+    if(resto !== +cpf[9]) return false;
+
+    soma = 0;
+    for(let i = 0; i < 10; i++) soma += +cpf[i] * (11 - i);
+    resto = (soma * 10) % 11;
+    if(resto === 10) resto = 0;
+
+    return resto === +cpf[10];
+  }
+
+  function validarCNPJ(cnpj){
+    // Vale para numérico e alfanumérico: os 2 últimos sempre são dígitos
+    if(cnpj.length !== 14 || !/^[0-9A-Z]{12}\d{2}$/.test(cnpj) || /^(\d)\1+$/.test(cnpj)) return false;
+    const dv1 = dvAlfa(cnpj, PESOS1);
+    const dv2 = dvAlfa(cnpj.slice(0,12) + dv1, PESOS2);
+    return `${dv1}${dv2}` === cnpj.slice(12);
+  }
+
+  function detectarTipo(limpo){
+    if(/[A-Z]/.test(limpo)) return 'alfa';
+    if(limpo.length > 11) return 'cnpj';
+    if(limpo.length === 0) return null;
+    return 'cpf';
+  }
+
+  function mascarar(limpo, tipo){
+    if(tipo === 'cpf'){
+      return limpo
+        .replace(/^(\d{3})(\d)/, '$1.$2')
+        .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+        .replace(/\.(\d{3})(\d)/, '.$1-$2');
+    }
+    return limpo
+      .replace(/^(\w{2})(\w)/, '$1.$2')
+      .replace(/^(\w{2})\.(\w{3})(\w)/, '$1.$2.$3')
+      .replace(/^(\w{2})\.(\w{3})\.(\w{3})(\w)/, '$1.$2.$3/$4')
+      .replace(/\/(\w{4})(\w)/, '/$1-$2');
+  }
+
+  const docInput = $('#doc');
+  const resultado = $('#resultado');
+  const ROTULO = { cpf:'CPF', cnpj:'CNPJ', alfa:'CNPJ alfanumérico' };
+
+  function estadoValidador(final){
+    const limpo = docInput.value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    const tipo = detectarTipo(limpo);
+    const total = tipo === 'cpf' ? 11 : 14;
+
+    document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.tipo === tipo));
+    $('#doc-count').textContent = tipo ? `${limpo.length} / ${total}` : '0 / 11–14';
+
+    const bar = $('#doc-progress');
+    bar.style.width = tipo ? `${Math.min(limpo.length / total, 1) * 100}%` : '0';
+
+    docInput.classList.remove('is-ok', 'is-bad');
+    resultado.className = '';
+
+    if(!tipo){
+      resultado.textContent = final ? 'Digite um CPF ou CNPJ para validar' : 'Aguardando documento…';
+      if(final) resultado.className = 'invalido';
+      bar.style.background = 'var(--accent)';
+      return;
+    }
+
+    const completo = (tipo === 'cpf' && limpo.length === 11) || limpo.length === 14;
+
+    if(!completo){
+      // CPF com 11 dígitos é completo; entre 12 e 13 ainda é CNPJ incompleto
+      if(final){
+        resultado.textContent = `❌ ${ROTULO[tipo]} incompleto`;
+        resultado.className = 'invalido';
+        docInput.classList.add('is-bad');
+      }else{
+        resultado.textContent = `Digitando ${ROTULO[tipo]}… faltam ${total - limpo.length}`;
+        resultado.className = 'parcial';
+      }
+      bar.style.background = 'var(--warn)';
+      return;
+    }
+
+    const ok = tipo === 'cpf' ? validarCPF(limpo) : validarCNPJ(limpo);
+    resultado.textContent = ok ? `✅ ${ROTULO[tipo]} válido` : `❌ ${ROTULO[tipo]} inválido`;
+    resultado.className = ok ? 'valido' : 'invalido';
+    docInput.classList.add(ok ? 'is-ok' : 'is-bad');
+    bar.style.background = ok ? 'var(--ok)' : 'var(--bad)';
+  }
+
+  docInput.addEventListener('input', () => {
+    const limpo = docInput.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 14);
+    const tipo = detectarTipo(limpo);
+    docInput.value = tipo ? mascarar(limpo, tipo) : '';
+    estadoValidador(false);
+  });
+
+  docInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') estadoValidador(true); });
+  $('#doc-validar').addEventListener('click', () => estadoValidador(true));
+  $('#doc-clear').addEventListener('click', () => { docInput.value = ''; estadoValidador(false); docInput.focus(); });
+
+  // =========================
+  // ATALHOS
+  // =========================
+
+  document.addEventListener('keydown', (e) => {
+    if(e.ctrlKey || e.metaKey || e.altKey) return;
+    const emCampo = e.target.matches('input:not([readonly]), textarea');
+
+    if(e.key === 'Escape' && emCampo){ e.target.blur(); return; }
+    if(emCampo) return;
+
+    const k = e.key.toLowerCase();
+    if(k === 'v'){ e.preventDefault(); docInput.focus(); return; }
+    if(k === 'g'){ gerarTudo(); return; }
+    if(acoes[k]) acoes[k]();
+  });
+
+  renderHistorico();
 
 </script>
 
